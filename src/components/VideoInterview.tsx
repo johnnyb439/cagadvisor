@@ -291,7 +291,6 @@ export default function VideoInterview({
               src="/mac-interviews.mp4"
               onEnded={handleVideoEnd}
               controls={true}
-              muted
               playsInline
               preload="auto"
             />
