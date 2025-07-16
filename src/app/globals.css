@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leaflet Map Styles */
+@import 'leaflet/dist/leaflet.css';
+
+/* Custom Font for Signature */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Gradient background utility */
+  .gradient-bg {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700;
+  }
+  
+  /* Clearance badge styles */
+  .clearance-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .clearance-badge.public {
+    @apply bg-clearance-public/10 text-clearance-public;
+  }
+  
+  .clearance-badge.secret {
+    @apply bg-clearance-secret/10 text-clearance-secret;
+  }
+  
+  .clearance-badge.topsecret {
+    @apply bg-clearance-topsecret/10 text-clearance-topsecret;
+  }
+  
+  .clearance-badge.sci {
+    @apply bg-clearance-sci/10 text-clearance-sci;
+  }
+}
