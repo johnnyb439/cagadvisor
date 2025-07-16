@@ -82,7 +82,7 @@ export default function VideoInterview({
     ]
   }
 
-  const questions = roleQuestions[userRole] || roleQuestions['Software Engineer']
+  const questions = roleQuestions[userRole as keyof typeof roleQuestions] || roleQuestions['Software Engineer']
 
   // Difficulty descriptions
   const difficultyLevels = [

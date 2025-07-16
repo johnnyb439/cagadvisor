@@ -241,7 +241,7 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
           >
             <ZoomableGroup>
               <Geographies geography={geoUrl}>
-                {({ geographies }) =>
+                {({ geographies }: { geographies: any[] }) =>
                   geographies.map((geo) => (
                     <Geography
                       key={geo.rsmKey}
