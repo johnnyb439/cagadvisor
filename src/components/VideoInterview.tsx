@@ -127,7 +127,10 @@ export default function VideoInterview({
     setTimeout(() => {
       if (videoRef.current) {
         setIsPlaying(true)
-        videoRef.current.play()
+        videoRef.current.play().catch(error => {
+          console.error('Video playback failed:', error)
+          setIsPlaying(false)
+        })
       }
     }, 500)
   }
@@ -135,7 +138,10 @@ export default function VideoInterview({
   const playQuestion = () => {
     if (videoRef.current) {
       setIsPlaying(true)
-      videoRef.current.play()
+      videoRef.current.play().catch(error => {
+        console.error('Video playback failed:', error)
+        setIsPlaying(false)
+      })
     }
   }
 
@@ -284,8 +290,21 @@ export default function VideoInterview({
               className="w-full h-full object-cover"
               src="/mac-interviews.mp4"
               onEnded={handleVideoEnd}
-              controls={false}
+              controls={true}
+              muted
+              playsInline
+              preload="auto"
             />
+            {!isPlaying && (
+              <button
+                onClick={playQuestion}
+                className="absolute inset-0 flex items-center justify-center bg-black/50 hover:bg-black/40 transition-colors"
+              >
+                <div className="bg-white rounded-full p-4">
+                  <Play className="h-8 w-8 text-blue-600" />
+                </div>
+              </button>
+            )}
           </div>
 
           <div className="bg-blue-50 rounded-lg p-4">
