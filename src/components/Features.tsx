@@ -45,25 +45,25 @@ export default function Features() {
   ]
 
   return (
-    <section className="py-20">
+    <section className="py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             Everything You Need to Advance Your Cleared Career
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-2 sm:px-0">
             Built specifically for the unique needs of security-cleared professionals and the organizations that need them.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon
             return (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition">
-                <Icon className="h-12 w-12 text-primary-600 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600 text-sm">{feature.description}</p>
+              <div key={index} className="bg-white p-5 sm:p-6 rounded-lg shadow-sm border hover:shadow-md transition">
+                <Icon className="h-10 w-10 sm:h-12 sm:w-12 text-primary-600 mb-3 sm:mb-4" />
+                <h3 className="text-base sm:text-lg font-semibold mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-xs sm:text-sm">{feature.description}</p>
               </div>
             )
           })}

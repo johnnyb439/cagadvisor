@@ -3,14 +3,14 @@ import { ArrowRight, Shield, Briefcase, Users } from 'lucide-react'
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-primary-50 to-white py-20">
+    <section className="bg-gradient-to-b from-primary-50 to-white py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
             Your Security Clearance is Your
             <span className="text-primary-600"> Superpower</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-lg sm:text-xl text-gray-600 mb-8 px-4 sm:px-0">
             Connect with top employers seeking cleared professionals. 
             Fast-track your career with our intelligent matching system.
           </p>
@@ -31,7 +31,7 @@ export default function Hero() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-16">
             <div className="text-center">
               <div className="bg-primary-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Shield className="h-8 w-8 text-primary-600" />

@@ -196,10 +196,10 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Global Cleared Job Opportunities</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Global Cleared Job Opportunities</h2>
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
             <span className="text-sm text-gray-600">Your clearance: </span>
@@ -208,37 +208,40 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
         </div>
         
         {/* Legend */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <div className="flex items-center gap-2 text-sm">
-            <div className="w-4 h-4 rounded-full bg-green-500"></div>
+        <div className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-500"></div>
             <span>Qualified</span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-yellow-500"></div>
             <span>Need some work</span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <div className="w-4 h-4 rounded-full bg-red-500"></div>
-            <span>Additional clearance required</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-500"></div>
+            <span className="hidden sm:inline">Additional clearance required</span>
+            <span className="sm:hidden">Need higher clearance</span>
           </div>
-          <div className="text-sm text-gray-600 ml-4">
-            Circle size = Number of jobs
+          <div className="text-gray-600 ml-2 sm:ml-4">
+            Circle size = Jobs
           </div>
         </div>
 
         {/* World Map */}
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg overflow-hidden border-2 border-blue-200">
-          <ComposableMap
-            projection="geoMercator"
-            projectionConfig={{
-              scale: 147,
-              center: [0, 20]
-            }}
-            style={{
-              width: "100%",
-              height: "auto"
-            }}
-          >
+          <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+            <div className="absolute inset-0">
+              <ComposableMap
+                projection="geoMercator"
+                projectionConfig={{
+                  scale: 147,
+                  center: [0, 20]
+                }}
+                style={{
+                  width: "100%",
+                  height: "100%"
+                }}
+              >
             <ZoomableGroup>
               <Geographies geography={geoUrl}>
                 {({ geographies }: { geographies: any[] }) =>
@@ -347,16 +350,18 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
                 )
               })}
             </ZoomableGroup>
-          </ComposableMap>
+              </ComposableMap>
+            </div>
+          </div>
         </div>
 
         {/* Selected Location Details */}
         {selectedLocation && (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
             <div className="flex items-start justify-between">
               <div className="w-full">
-                <h3 className="font-semibold text-lg mb-2">{selectedLocation.city}, {selectedLocation.country}</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <h3 className="font-semibold text-base sm:text-lg mb-2">{selectedLocation.city}, {selectedLocation.country}</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm">
                   <div>
                     <p className="text-gray-600 flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
