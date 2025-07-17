@@ -175,7 +175,7 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
     } else if (requiredLevel - userLevel === 1) {
       return 'close' // Yellow - Need some work
     } else {
-      return 'needHigher' // Red - Need credentials - Not qualified
+      return 'needHigher' // Red - Additional clearance required
     }
   }
 
@@ -219,7 +219,7 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
           </div>
           <div className="flex items-center gap-2 text-sm">
             <div className="w-4 h-4 rounded-full bg-red-500"></div>
-            <span>Need credentials - Not qualified</span>
+            <span>Additional clearance required</span>
           </div>
           <div className="text-sm text-gray-600 ml-4">
             Circle size = Number of jobs
