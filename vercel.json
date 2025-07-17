@@ -26,10 +26,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "public/videos/*": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
