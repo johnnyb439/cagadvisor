@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps'
 import { MapPin, Shield, Users, DollarSign } from 'lucide-react'
 
-// GeoJSON data URL for world map
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
+// GeoJSON data URL for world map - using local proxy to avoid CORS issues
+const geoUrl = "/api/map-data"
 
 // Job locations with real coordinates
 const jobLocations = [
@@ -242,20 +242,26 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
             <ZoomableGroup>
               <Geographies geography={geoUrl}>
                 {({ geographies }: { geographies: any[] }) =>
-                  geographies.map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill="#e0f2fe"
-                      stroke="#93c5fd"
-                      strokeWidth={0.5}
-                      style={{
-                        default: { outline: 'none' },
-                        hover: { fill: '#dbeafe', outline: 'none' },
-                        pressed: { outline: 'none' }
-                      }}
-                    />
-                  ))
+                  geographies && geographies.length > 0 ? (
+                    geographies.map((geo) => (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill="#e0f2fe"
+                        stroke="#93c5fd"
+                        strokeWidth={0.5}
+                        style={{
+                          default: { outline: 'none' },
+                          hover: { fill: '#dbeafe', outline: 'none' },
+                          pressed: { outline: 'none' }
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <text x="50%" y="50%" textAnchor="middle" fill="#999">
+                      Loading map...
+                    </text>
+                  )
                 }
               </Geographies>
               

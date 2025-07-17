@@ -27,6 +27,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Allow external domains for map data
+  async rewrites() {
+    return [
+      {
+        source: '/api/map-data',
+        destination: 'https://unpkg.com/world-atlas@2.0.2/countries-110m.json',
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
