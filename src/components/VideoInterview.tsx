@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, Video, Camera, StopCircle, RotateCcw, Check, Clock, AlertCircle } from 'lucide-react'
+import VideoPlayer from './VideoPlayer'
 
 interface VideoInterviewProps {
   jobTitle?: string
@@ -285,25 +286,13 @@ export default function VideoInterview({
       {stage === 'question' && (
         <div className="space-y-6">
           <div className="bg-gray-900 rounded-lg aspect-video flex items-center justify-center relative overflow-hidden">
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              src="/mac-interviews.mp4"
+            <VideoPlayer
+              src="/videos/mock-interview.mp4"
               onEnded={handleVideoEnd}
               controls={true}
-              playsInline
-              preload="auto"
+              ariaLabel={`Mock interview question ${currentQuestion + 1}: ${questions[currentQuestion].text}`}
+              className="w-full h-full object-cover"
             />
-            {!isPlaying && (
-              <button
-                onClick={playQuestion}
-                className="absolute inset-0 flex items-center justify-center bg-black/50 hover:bg-black/40 transition-colors"
-              >
-                <div className="bg-white rounded-full p-4">
-                  <Play className="h-8 w-8 text-blue-600" />
-                </div>
-              </button>
-            )}
           </div>
 
           <div className="bg-blue-50 rounded-lg p-4">

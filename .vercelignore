@@ -2,3 +2,8 @@
 .git
 node_modules
 .env.local
+.DS_Store
+*.log
+
+# Do NOT ignore public videos
+!public/videos/
