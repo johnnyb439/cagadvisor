@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import { Play, Pause, AlertCircle } from 'lucide-react'
+import { Play, Pause, AlertCircle, Volume2, VolumeX } from 'lucide-react'
 
 interface VideoPlayerProps {
   src: string
@@ -26,6 +26,7 @@ export default function VideoPlayer({
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMuted, setIsMuted] = useState(muted)
 
   useEffect(() => {
     const video = videoRef.current
@@ -37,6 +38,11 @@ export default function VideoPlayer({
       console.error('Video playback error')
       setHasError(true)
       setIsLoading(false)
+    }
+    const handleVolumeChange = () => {
+      if (video) {
+        setIsMuted(video.muted)
+      }
     }
     const handleLoadedData = () => {
       setIsLoading(false)
@@ -52,12 +58,14 @@ export default function VideoPlayer({
     video.addEventListener('pause', handlePause)
     video.addEventListener('error', handleError)
     video.addEventListener('loadeddata', handleLoadedData)
+    video.addEventListener('volumechange', handleVolumeChange)
 
     return () => {
       video.removeEventListener('play', handlePlay)
       video.removeEventListener('pause', handlePause)
       video.removeEventListener('error', handleError)
       video.removeEventListener('loadeddata', handleLoadedData)
+      video.removeEventListener('volumechange', handleVolumeChange)
     }
   }, [autoPlay])
 
@@ -73,6 +81,13 @@ export default function VideoPlayer({
     } catch (error) {
       console.error('Playback failed:', error)
       setHasError(true)
+    }
+  }
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted
+      setIsMuted(!videoRef.current.muted)
     }
   }
 
@@ -135,6 +150,18 @@ export default function VideoPlayer({
               <Play className="h-8 w-8 text-blue-600" />
             </div>
           )}
+        </button>
+      )}
+      
+      {/* Unmute button overlay */}
+      {isPlaying && isMuted && !hasError && !isLoading && (
+        <button
+          onClick={toggleMute}
+          className="absolute top-4 right-4 bg-black/70 hover:bg-black/80 text-white p-3 rounded-lg transition-colors flex items-center gap-2"
+          aria-label="Unmute video"
+        >
+          <VolumeX className="h-5 w-5" />
+          <span className="text-sm font-medium">Click to unmute</span>
         </button>
       )}
     </div>

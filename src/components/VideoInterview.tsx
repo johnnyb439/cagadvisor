@@ -275,7 +275,7 @@ export default function VideoInterview({
               onEnded={handleVideoEnd}
               controls={true}
               autoPlay={true}
-              muted={false}
+              muted={true}
               ariaLabel={`Mock interview question ${currentQuestion + 1}: ${questions[currentQuestion].text}`}
               className="w-full h-full object-cover"
             />
