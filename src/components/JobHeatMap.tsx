@@ -196,14 +196,14 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-2">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Global Cleared Job Opportunities</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Global Cleared Job Opportunities</h2>
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            <span className="text-sm text-gray-600">Your clearance: </span>
-            <span className="font-semibold text-blue-600">{userClearance}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">Your clearance: </span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">{userClearance}</span>
           </div>
         </div>
         
@@ -211,24 +211,24 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
         <div className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-500"></div>
-            <span>Qualified</span>
+            <span className="dark:text-gray-300">Qualified</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-yellow-500"></div>
-            <span>Need some work</span>
+            <span className="dark:text-gray-300">Need some work</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-500"></div>
-            <span className="hidden sm:inline">Additional clearance required</span>
-            <span className="sm:hidden">Need higher clearance</span>
+            <span className="hidden sm:inline dark:text-gray-300">Additional clearance required</span>
+            <span className="sm:hidden dark:text-gray-300">Need higher clearance</span>
           </div>
-          <div className="text-gray-600 ml-2 sm:ml-4">
+          <div className="text-gray-600 dark:text-gray-400 ml-2 sm:ml-4">
             Circle size = Jobs
           </div>
         </div>
 
         {/* World Map */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg overflow-hidden border-2 border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 rounded-lg overflow-hidden border-2 border-blue-200 dark:border-gray-700">
           <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
             <div className="absolute inset-0">
               <ComposableMap
@@ -357,20 +357,20 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
 
         {/* Selected Location Details */}
         {selectedLocation && (
-          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg">
+          <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
             <div className="flex items-start justify-between">
               <div className="w-full">
-                <h3 className="font-semibold text-base sm:text-lg mb-2">{selectedLocation.city}, {selectedLocation.country}</h3>
+                <h3 className="font-semibold text-base sm:text-lg mb-2 dark:text-gray-100">{selectedLocation.city}, {selectedLocation.country}</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm">
                   <div>
-                    <p className="text-gray-600 flex items-center gap-1">
+                    <p className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
                       Available Jobs
                     </p>
                     <p className="font-bold text-xl">{selectedLocation.jobCount}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 flex items-center gap-1">
+                    <p className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                       <Shield className="h-4 w-4" />
                       Required
                     </p>
@@ -381,14 +381,14 @@ export default function JobHeatMap({ userClearance = 'Secret' }: JobHeatMapProps
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-600 flex items-center gap-1">
+                    <p className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                       <DollarSign className="h-4 w-4" />
                       Avg. Salary
                     </p>
                     <p className="font-bold">{selectedLocation.avgSalary}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600 flex items-center gap-1">
+                    <p className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                       <Users className="h-4 w-4" />
                       Top Employers
                     </p>

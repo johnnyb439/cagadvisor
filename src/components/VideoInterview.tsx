@@ -25,7 +25,7 @@ export default function VideoInterview({
   const [recordingTime, setRecordingTime] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [difficulty, setDifficulty] = useState(3)
-  const [shouldMute, setShouldMute] = useState(true)
+  const [shouldUnmute, setShouldUnmute] = useState(false)
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Role-specific questions based on user profile
@@ -125,6 +125,7 @@ export default function VideoInterview({
     setStage('question')
     setCurrentQuestion(0)
     setIsPlaying(true)
+    setShouldUnmute(true) // User has interacted by clicking button
   }
 
   const playQuestion = () => {
@@ -136,10 +137,18 @@ export default function VideoInterview({
   }
 
   const startRecording = () => {
-    setShouldMute(false) // Unmute the video when recording starts
+    setShouldUnmute(true)
     setStage('recording')
     setIsRecording(true)
     setRecordingTime(0)
+    
+    // Also try clicking the unmute button after a short delay
+    setTimeout(() => {
+      const unmuteButton = document.querySelector('[aria-label="Unmute video"]') as HTMLButtonElement
+      if (unmuteButton) {
+        unmuteButton.click()
+      }
+    }, 100)
   }
 
   const stopRecording = () => {
@@ -277,7 +286,8 @@ export default function VideoInterview({
               onEnded={handleVideoEnd}
               controls={true}
               autoPlay={true}
-              muted={shouldMute}
+              muted={!shouldUnmute} // Start muted only if user hasn't interacted
+              forceUnmute={shouldUnmute}
               ariaLabel={`Mock interview question ${currentQuestion + 1}: ${questions[currentQuestion].text}`}
               className="w-full h-full object-cover"
             />

@@ -10,6 +10,7 @@ interface VideoPlayerProps {
   muted?: boolean
   controls?: boolean
   ariaLabel?: string
+  forceUnmute?: boolean
 }
 
 export default function VideoPlayer({
@@ -20,7 +21,8 @@ export default function VideoPlayer({
   autoPlay = false,
   muted = false,
   controls = true,
-  ariaLabel = "Video player"
+  ariaLabel = "Video player",
+  forceUnmute = false
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -44,13 +46,37 @@ export default function VideoPlayer({
         setIsMuted(video.muted)
       }
     }
-    const handleLoadedData = () => {
+    const handleLoadedData = async () => {
       setIsLoading(false)
       // Autoplay if requested
       if (autoPlay && videoRef.current) {
-        videoRef.current.play().catch(error => {
-          console.error('Autoplay failed:', error)
-        })
+        try {
+          // Try to play unmuted first
+          videoRef.current.muted = false
+          await videoRef.current.play()
+          setIsMuted(false)
+        } catch (error) {
+          console.error('Unmuted autoplay failed:', error)
+          // If unmuted fails, try muted
+          if (videoRef.current) {
+            videoRef.current.muted = true
+            setIsMuted(true)
+            try {
+              await videoRef.current.play()
+              // Immediately try to unmute after starting
+              if (forceUnmute) {
+                setTimeout(() => {
+                  if (videoRef.current) {
+                    videoRef.current.muted = false
+                    setIsMuted(false)
+                  }
+                }, 100)
+              }
+            } catch (e) {
+              console.error('Muted autoplay also failed:', e)
+            }
+          }
+        }
       }
     }
 
@@ -76,6 +102,14 @@ export default function VideoPlayer({
       setIsMuted(muted)
     }
   }, [muted])
+
+  // Handle forceUnmute
+  useEffect(() => {
+    if (forceUnmute && videoRef.current && videoRef.current.muted) {
+      videoRef.current.muted = false
+      setIsMuted(false)
+    }
+  }, [forceUnmute])
 
   const handlePlayClick = async () => {
     if (!videoRef.current) return
@@ -125,7 +159,7 @@ export default function VideoPlayer({
         onEnded={onEnded}
         controls={controls}
         autoPlay={autoPlay}
-        muted={muted}
+        muted={forceUnmute ? false : muted}
         playsInline
         preload="metadata"
         crossOrigin="anonymous"
@@ -161,8 +195,8 @@ export default function VideoPlayer({
         </button>
       )}
       
-      {/* Unmute button overlay */}
-      {isPlaying && isMuted && !hasError && !isLoading && (
+      {/* Unmute button overlay - only show if not forceUnmute */}
+      {isPlaying && isMuted && !hasError && !isLoading && !forceUnmute && (
         <button
           onClick={toggleMute}
           className="absolute top-4 right-4 bg-black/70 hover:bg-black/80 text-white p-3 rounded-lg transition-colors flex items-center gap-2"

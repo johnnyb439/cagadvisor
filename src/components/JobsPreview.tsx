@@ -43,33 +43,33 @@ export default function JobsPreview() {
   }
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="bg-gray-50 dark:bg-gray-900 py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Featured Opportunities
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 dark:text-gray-400">
             Top positions from verified employers actively seeking cleared professionals
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {featuredJobs.map((job, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition">
+            <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md dark:hover:shadow-gray-700/50 transition">
               <div className="mb-4">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">{job.title}</h3>
+                  <h3 className="text-xl font-semibold dark:text-gray-100">{job.title}</h3>
                   <span className={getClearanceBadgeClass(job.clearance)}>
                     {job.clearance}
                   </span>
                 </div>
-                <p className="text-gray-700 font-medium">{job.company}</p>
+                <p className="text-gray-700 dark:text-gray-300 font-medium">{job.company}</p>
               </div>
 
-              <p className="text-gray-600 mb-4">{job.description}</p>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">{job.description}</p>
 
-              <div className="space-y-2 text-sm text-gray-600">
+              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   <span>{job.location}</span>
@@ -94,7 +94,7 @@ export default function JobsPreview() {
         <div className="text-center">
           <Link 
             href="/jobs" 
-            className="inline-flex items-center gap-2 text-primary-600 font-semibold hover:text-primary-700"
+            className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-semibold hover:text-primary-700 dark:hover:text-primary-300"
           >
             View All Jobs
             <ArrowRight className="h-5 w-5" />
