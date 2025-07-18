@@ -25,6 +25,7 @@ export default function VideoInterview({
   const [recordingTime, setRecordingTime] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [difficulty, setDifficulty] = useState(3)
+  const [shouldMute, setShouldMute] = useState(true)
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Role-specific questions based on user profile
@@ -135,6 +136,7 @@ export default function VideoInterview({
   }
 
   const startRecording = () => {
+    setShouldMute(false) // Unmute the video when recording starts
     setStage('recording')
     setIsRecording(true)
     setRecordingTime(0)
@@ -275,7 +277,7 @@ export default function VideoInterview({
               onEnded={handleVideoEnd}
               controls={true}
               autoPlay={true}
-              muted={true}
+              muted={shouldMute}
               ariaLabel={`Mock interview question ${currentQuestion + 1}: ${questions[currentQuestion].text}`}
               className="w-full h-full object-cover"
             />

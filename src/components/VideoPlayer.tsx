@@ -69,6 +69,14 @@ export default function VideoPlayer({
     }
   }, [autoPlay])
 
+  // Update mute state when prop changes
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted
+      setIsMuted(muted)
+    }
+  }, [muted])
+
   const handlePlayClick = async () => {
     if (!videoRef.current) return
     
