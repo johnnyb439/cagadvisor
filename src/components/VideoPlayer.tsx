@@ -38,7 +38,15 @@ export default function VideoPlayer({
       setHasError(true)
       setIsLoading(false)
     }
-    const handleLoadedData = () => setIsLoading(false)
+    const handleLoadedData = () => {
+      setIsLoading(false)
+      // Autoplay if requested
+      if (autoPlay && videoRef.current) {
+        videoRef.current.play().catch(error => {
+          console.error('Autoplay failed:', error)
+        })
+      }
+    }
 
     video.addEventListener('play', handlePlay)
     video.addEventListener('pause', handlePause)
@@ -51,7 +59,7 @@ export default function VideoPlayer({
       video.removeEventListener('error', handleError)
       video.removeEventListener('loadeddata', handleLoadedData)
     }
-  }, [])
+  }, [autoPlay])
 
   const handlePlayClick = async () => {
     if (!videoRef.current) return

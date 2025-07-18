@@ -25,7 +25,6 @@ export default function VideoInterview({
   const [recordingTime, setRecordingTime] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [difficulty, setDifficulty] = useState(3)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Role-specific questions based on user profile
@@ -124,26 +123,11 @@ export default function VideoInterview({
   const startQuestions = () => {
     setStage('question')
     setCurrentQuestion(0)
-    // Auto-play video after a short delay
-    setTimeout(() => {
-      if (videoRef.current) {
-        setIsPlaying(true)
-        videoRef.current.play().catch(error => {
-          console.error('Video playback failed:', error)
-          setIsPlaying(false)
-        })
-      }
-    }, 500)
+    setIsPlaying(true)
   }
 
   const playQuestion = () => {
-    if (videoRef.current) {
-      setIsPlaying(true)
-      videoRef.current.play().catch(error => {
-        console.error('Video playback failed:', error)
-        setIsPlaying(false)
-      })
-    }
+    setIsPlaying(true)
   }
 
   const handleVideoEnd = () => {
@@ -290,6 +274,8 @@ export default function VideoInterview({
               src="/videos/mock-interview.mp4"
               onEnded={handleVideoEnd}
               controls={true}
+              autoPlay={true}
+              muted={false}
               ariaLabel={`Mock interview question ${currentQuestion + 1}: ${questions[currentQuestion].text}`}
               className="w-full h-full object-cover"
             />
@@ -306,10 +292,11 @@ export default function VideoInterview({
           <div className="flex justify-center gap-4">
             <button
               onClick={() => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = 0
-                  playQuestion()
-                }
+                // Reset video by remounting the VideoPlayer component
+                setIsPlaying(false)
+                setTimeout(() => {
+                  setIsPlaying(true)
+                }, 100)
               }}
               className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition"
             >
