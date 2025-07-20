@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Header />
-          <main className="min-h-screen">
+          <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
             {children}
           </main>
           <Footer />

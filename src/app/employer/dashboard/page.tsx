@@ -56,84 +56,84 @@ export default function EmployerDashboardPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new': return 'bg-blue-100 text-blue-800'
-      case 'reviewing': return 'bg-yellow-100 text-yellow-800'
-      case 'interview': return 'bg-purple-100 text-purple-800'
-      case 'offer': return 'bg-green-100 text-green-800'
-      case 'rejected': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'new': return 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
+      case 'reviewing': return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300'
+      case 'interview': return 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300'
+      case 'offer': return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+      case 'rejected': return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Employer Dashboard</h1>
-              <p className="text-gray-600">Welcome back, Lockheed Martin</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Employer Dashboard</h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Welcome back, Lockheed Martin</p>
             </div>
-            <button className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition flex items-center gap-2">
-              <Plus className="h-5 w-5" />
+            <button className="bg-primary-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-primary-700 transition flex items-center gap-2 text-sm sm:text-base">
+              <Plus className="h-4 sm:h-5 w-4 sm:w-5" />
               Post New Job
             </button>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between mb-4">
-              <Briefcase className="h-8 w-8 text-primary-600" />
-              <span className="text-sm text-green-600 font-medium">+8.3%</span>
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <Briefcase className="h-6 sm:h-8 w-6 sm:w-8 text-primary-600" />
+              <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">+8.3%</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stats.activeJobs}</p>
-            <p className="text-gray-600">Active Jobs</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.activeJobs}</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Active Jobs</p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between mb-4">
-              <Users className="h-8 w-8 text-primary-600" />
-              <span className="text-sm text-green-600 font-medium">+15.2%</span>
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <Users className="h-6 sm:h-8 w-6 sm:w-8 text-primary-600" />
+              <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">+15.2%</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stats.totalApplications}</p>
-            <p className="text-gray-600">Total Applications</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalApplications}</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Total Applications</p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between mb-4">
-              <TrendingUp className="h-8 w-8 text-primary-600" />
-              <span className="text-sm text-green-600 font-medium">New</span>
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <TrendingUp className="h-6 sm:h-8 w-6 sm:w-8 text-primary-600" />
+              <span className="text-xs sm:text-sm text-green-600 dark:text-green-400 font-medium">New</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stats.newThisWeek}</p>
-            <p className="text-gray-600">New This Week</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.newThisWeek}</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">New This Week</p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <div className="flex items-center justify-between mb-4">
-              <Clock className="h-8 w-8 text-primary-600" />
-              <span className="text-sm text-red-600 font-medium">-2 days</span>
+          <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <Clock className="h-6 sm:h-8 w-6 sm:w-8 text-primary-600" />
+              <span className="text-xs sm:text-sm text-red-600 dark:text-red-400 font-medium">-2 days</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stats.avgTimeToHire} days</p>
-            <p className="text-gray-600">Avg. Time to Hire</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.avgTimeToHire} days</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Avg. Time to Hire</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border">
-              <div className="p-6 border-b">
-                <h2 className="text-lg font-semibold">Recent Candidates</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Recent Candidates</h2>
               </div>
-              <div className="divide-y">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {recentCandidates.map((candidate) => (
-                  <div key={candidate.id} className="p-6 hover:bg-gray-50 transition">
-                    <div className="flex items-start justify-between">
+                  <div key={candidate.id} className="p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-gray-900">{candidate.name}</h3>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="font-semibold text-gray-900 dark:text-gray-100">{candidate.name}</h3>
                           <span className={getClearanceBadgeClass(candidate.clearance)}>
                             {candidate.clearance}
                           </span>
@@ -141,26 +141,26 @@ export default function EmployerDashboardPage() {
                             {candidate.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                           <span>{candidate.experience} experience</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <span>Applied {candidate.appliedDate}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
                         <div className="text-center">
-                          <p className="text-2xl font-bold text-primary-600">{candidate.matchScore}%</p>
-                          <p className="text-xs text-gray-600">match</p>
+                          <p className="text-xl sm:text-2xl font-bold text-primary-600">{candidate.matchScore}%</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">match</p>
                         </div>
-                        <button className="p-2 hover:bg-gray-100 rounded-lg">
-                          <ChevronRight className="h-5 w-5 text-gray-400" />
+                        <button className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                          <ChevronRight className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400 dark:text-gray-500" />
                         </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="p-4 border-t">
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                 <button className="text-primary-600 hover:text-primary-700 font-medium text-sm">
                   View All Candidates →
                 </button>
@@ -169,27 +169,27 @@ export default function EmployerDashboardPage() {
           </div>
 
           <div>
-            <div className="bg-white rounded-lg shadow-sm border">
-              <div className="p-6 border-b">
-                <h2 className="text-lg font-semibold">Active Job Postings</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">Active Job Postings</h2>
               </div>
-              <div className="divide-y">
+              <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {jobPostings.map((job) => (
-                  <div key={job.id} className="p-4 hover:bg-gray-50 transition">
+                  <div key={job.id} className="p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-medium text-gray-900">{job.title}</h3>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <MoreVertical className="h-4 w-4 text-gray-400" />
+                      <h3 className="font-medium text-gray-900 dark:text-gray-100 text-sm sm:text-base">{job.title}</h3>
+                      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                        <MoreVertical className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                       </button>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                       <span>{job.applicants} applicants</span>
                       {job.new > 0 && (
                         <span className="text-primary-600 font-medium">+{job.new} new</span>
                       )}
                     </div>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="text-xs text-gray-500">Posted {job.posted}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-500">Posted {job.posted}</span>
                       <button className="text-xs text-primary-600 hover:text-primary-700 flex items-center gap-1">
                         <Eye className="h-3 w-3" />
                         View
@@ -198,19 +198,19 @@ export default function EmployerDashboardPage() {
                   </div>
                 ))}
               </div>
-              <div className="p-4 border-t">
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
                 <button className="text-primary-600 hover:text-primary-700 font-medium text-sm">
                   Manage All Jobs →
                 </button>
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg p-6 mt-6 text-white">
-              <h3 className="font-semibold mb-2">Upgrade to Pro</h3>
-              <p className="text-sm opacity-90 mb-4">
+            <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg p-4 sm:p-6 mt-4 sm:mt-6 text-white">
+              <h3 className="font-semibold mb-2 text-base sm:text-lg">Upgrade to Pro</h3>
+              <p className="text-xs sm:text-sm opacity-90 mb-3 sm:mb-4">
                 Get advanced analytics, unlimited job posts, and priority support.
               </p>
-              <button className="bg-white text-primary-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+              <button className="bg-white text-primary-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-gray-100 transition">
                 Learn More
               </button>
             </div>
