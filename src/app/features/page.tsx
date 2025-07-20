@@ -1,6 +1,8 @@
 import JobHeatMap from '@/components/JobHeatMap'
 import InterviewMarker from '@/components/InterviewMarker'
 import VideoInterview from '@/components/VideoInterview'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 export default function FeaturesPage() {
   return (
@@ -38,6 +40,28 @@ export default function FeaturesPage() {
             userRole="Network Engineer"
             userExperience="Senior"
           />
+        </section>
+
+        {/* AI Interview Section */}
+        <section className="mb-12">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 text-center">
+              AI-Powered Interview Practice
+            </h2>
+            <div className="max-w-3xl mx-auto text-center">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Practice your interview skills with our AI interviewer. Get personalized questions based on your experience level
+                and receive instant feedback to improve your responses.
+              </p>
+              <Link 
+                href="/interview"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition"
+              >
+                Start AI Interview
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* Feature Descriptions */}
