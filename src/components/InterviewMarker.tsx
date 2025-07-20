@@ -30,8 +30,8 @@ export default function InterviewMarker({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-      <h3 className="text-xl font-bold mb-4 text-gray-900">Interview Approval</h3>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 p-4 sm:p-6 max-w-md mx-auto">
+      <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-gray-900 dark:text-gray-100">Interview Approval</h3>
       
       <div className="relative">
         {/* Button */}
@@ -64,8 +64,8 @@ export default function InterviewMarker({
         {/* Signature/Mark Reveal */}
         <div
           className={`
-            mt-6 p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg
-            border-2 border-dashed border-blue-300
+            mt-4 sm:mt-6 p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg
+            border-2 border-dashed border-blue-300 dark:border-blue-600
             transition-all duration-1000 transform
             ${isRevealed 
               ? 'opacity-100 translate-y-0' 
@@ -84,31 +84,31 @@ export default function InterviewMarker({
             {/* Interviewer Details */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="bg-blue-100 rounded-full p-2">
-                  <User className="h-6 w-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900/30 rounded-full p-2">
+                  <User className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <p className="font-bold text-lg text-gray-900">{interviewerName}</p>
-                  <p className="text-sm text-gray-600">{interviewerTitle}</p>
+                  <p className="font-bold text-base sm:text-lg text-gray-900 dark:text-gray-100">{interviewerName}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{interviewerTitle}</p>
                 </div>
               </div>
 
               {/* Signature */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="font-handwriting text-3xl text-blue-800 transform -rotate-2">
+              <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-600">
+                <div className="font-handwriting text-2xl sm:text-3xl text-blue-800 dark:text-blue-400 transform -rotate-2">
                   {interviewerName}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                   {companyName} • {date}
                 </p>
               </div>
 
               {/* Approval Message */}
-              <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                <p className="text-sm text-green-800 font-medium">
+              <div className="mt-3 sm:mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                <p className="text-xs sm:text-sm text-green-800 dark:text-green-300 font-medium">
                   ✓ Candidate approved for next round
                 </p>
-                <p className="text-xs text-green-600 mt-1">
+                <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                   Security clearance verified • Technical skills validated
                 </p>
               </div>
@@ -139,7 +139,7 @@ export default function InterviewMarker({
 
       {/* Instructions */}
       {!isRevealed && (
-        <p className="text-sm text-gray-600 mt-4 text-center">
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-3 sm:mt-4 text-center">
           Press the button to reveal the hiring manager&apos;s approval mark
         </p>
       )}
