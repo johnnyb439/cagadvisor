@@ -9,6 +9,13 @@ A modern web platform connecting security-cleared professionals with global empl
 
 ## 🚀 Features
 
+### 🎯 NEW: Recruiter Dashboard (July 2025)
+- **Clearance Verification Tool** - Instantly verify candidate clearance status (Active/Inactive/In-Scope)
+- **Smart Resume Parser** - AI-powered resume analysis with automatic data extraction
+- **Talent Radar** - Auto-match candidates to open positions based on clearance, skills, and location
+- **Activity Tracker** - Timeline view of all candidate interactions and communications
+- **Talent Pipelines** - Organize candidates into custom talent pools by clearance level and skills
+
 ### 🗺️ Interactive Global Job Heat Map
 - Real-world map visualization using `react-simple-maps`
 - Color-coded markers (Green: Qualified, Yellow: Close, Red: Need Higher Clearance)
