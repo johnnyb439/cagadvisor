@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Users, Briefcase, Clock, TrendingUp, ChevronRight, MoreVertical, Eye } from 'lucide-react'
+import { Plus, Users, Briefcase, Clock, TrendingUp, ChevronRight, MoreVertical, Eye, Home, Search, Database, Calendar, MessageSquare } from 'lucide-react'
+import ClearanceVerification from '@/components/employer/ClearanceVerification'
+import ResumeParser from '@/components/employer/ResumeParser'
+import TalentRadar from '@/components/employer/TalentRadar'
 
 interface Candidate {
   id: string
@@ -23,7 +26,7 @@ interface JobPosting {
 }
 
 export default function EmployerDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'candidates' | 'analytics'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'talent-radar' | 'verification' | 'pipelines' | 'messaging'>('overview')
 
   const stats = {
     activeJobs: 12,
@@ -65,14 +68,22 @@ export default function EmployerDashboardPage() {
     }
   }
 
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: Home },
+    { id: 'talent-radar', label: 'Talent Radar', icon: Search },
+    { id: 'verification', label: 'Verification', icon: Database },
+    { id: 'pipelines', label: 'Pipelines', icon: Users },
+    { id: 'messaging', label: 'Messages', icon: MessageSquare },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Employer Dashboard</h1>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Welcome back, Lockheed Martin</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Recruiter Dashboard</h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Welcome back, Veronika</p>
             </div>
             <button className="bg-primary-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-primary-700 transition flex items-center gap-2 text-sm sm:text-base">
               <Plus className="h-4 sm:h-5 w-4 sm:w-5" />
@@ -80,10 +91,34 @@ export default function EmployerDashboardPage() {
             </button>
           </div>
         </div>
+        
+        <div className="container mx-auto px-4">
+          <div className="flex gap-1 overflow-x-auto">
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex items-center gap-2 px-4 py-3 border-b-2 transition whitespace-nowrap ${
+                    activeTab === tab.id
+                      ? 'border-primary-600 text-primary-600'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="text-sm font-medium">{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto px-4 py-6 sm:py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        {activeTab === 'overview' && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <Briefcase className="h-6 sm:h-8 w-6 sm:w-8 text-primary-600" />
@@ -216,6 +251,35 @@ export default function EmployerDashboardPage() {
             </div>
           </div>
         </div>
+          </>
+        )}
+
+        {activeTab === 'talent-radar' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <TalentRadar />
+            <ResumeParser />
+          </div>
+        )}
+
+        {activeTab === 'verification' && (
+          <div className="max-w-4xl mx-auto">
+            <ClearanceVerification />
+          </div>
+        )}
+
+        {activeTab === 'pipelines' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Talent Pipelines</h2>
+            <p className="text-gray-600 dark:text-gray-400">Coming soon: Create and manage talent pools by clearance level, skills, and location.</p>
+          </div>
+        )}
+
+        {activeTab === 'messaging' && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Secure Messaging</h2>
+            <p className="text-gray-600 dark:text-gray-400">Coming soon: Encrypted messaging with cleared candidates.</p>
+          </div>
+        )}
       </div>
     </div>
   )
