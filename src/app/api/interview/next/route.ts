@@ -3,9 +3,17 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client lazily to avoid build-time errors
+let openai: OpenAI | null = null;
+
+function getOpenAIClient() {
+  if (!openai && process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  }
+  return openai;
+}
 
 // Placeholder for Heygen API call
 async function generateHeygenVideo(text: string) {
@@ -25,7 +33,12 @@ export async function POST(request: Request) {
 
     const prompt = `Based on the following conversation, ask a relevant follow-up question.\n\n${conversationHistory.join('\n')}\nUser: ${answer}`;
 
-    const completion = await openai.chat.completions.create({
+    const client = getOpenAIClient();
+    if (!client) {
+      return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 500 });
+    }
+    
+    const completion = await client.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
     });
