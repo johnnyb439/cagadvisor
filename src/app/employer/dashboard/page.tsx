@@ -5,6 +5,8 @@ import { Plus, Users, Briefcase, Clock, TrendingUp, ChevronRight, MoreVertical, 
 import ClearanceVerification from '@/components/employer/ClearanceVerification'
 import ResumeParser from '@/components/employer/ResumeParser'
 import TalentRadar from '@/components/employer/TalentRadar'
+import CandidateActivityTracker from '@/components/employer/CandidateActivityTracker'
+import TalentPipelines from '@/components/employer/TalentPipelines'
 
 interface Candidate {
   id: string
@@ -26,7 +28,7 @@ interface JobPosting {
 }
 
 export default function EmployerDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'talent-radar' | 'verification' | 'pipelines' | 'messaging'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'talent-radar' | 'verification' | 'pipelines' | 'activity' | 'messaging'>('overview')
 
   const stats = {
     activeJobs: 12,
@@ -73,6 +75,7 @@ export default function EmployerDashboardPage() {
     { id: 'talent-radar', label: 'Talent Radar', icon: Search },
     { id: 'verification', label: 'Verification', icon: Database },
     { id: 'pipelines', label: 'Pipelines', icon: Users },
+    { id: 'activity', label: 'Activity', icon: Clock },
     { id: 'messaging', label: 'Messages', icon: MessageSquare },
   ]
 
@@ -268,9 +271,12 @@ export default function EmployerDashboardPage() {
         )}
 
         {activeTab === 'pipelines' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Talent Pipelines</h2>
-            <p className="text-gray-600 dark:text-gray-400">Coming soon: Create and manage talent pools by clearance level, skills, and location.</p>
+          <TalentPipelines />
+        )}
+
+        {activeTab === 'activity' && (
+          <div className="max-w-4xl mx-auto">
+            <CandidateActivityTracker />
           </div>
         )}
 
