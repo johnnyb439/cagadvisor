@@ -61,7 +61,7 @@ export default function EnhancedHero() {
             Bridging the gap for National Guard, Reservists, Veterans, and cleared professionals seeking premium government contracting roles
           </p>
 
-          {/* CTA Buttons - High Contrast */}
+          {/* CTA Buttons - Updated with correct routes */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up animation-delay-400">
             <Link
               href="/jobs"
@@ -72,7 +72,7 @@ export default function EnhancedHero() {
             </Link>
             
             <Link
-              href="/mock-interview"
+              href="/interview"
               className="group bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
             >
               Try AI Mock Interview
@@ -83,7 +83,7 @@ export default function EnhancedHero() {
               href="/auth/register"
               className="group border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
             >
-              Schedule Consultation
+              Get Started Free
               <Calendar className="ml-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
             </Link>
           </div>

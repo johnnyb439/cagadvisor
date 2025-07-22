@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import EnhancedHeader from '@/components/EnhancedHeader'
-import EnhancedFooter from '@/components/EnhancedFooter'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -21,11 +21,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <EnhancedHeader />
-          <main className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-20">
+          <Header />
+          <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
             {children}
           </main>
-          <EnhancedFooter />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

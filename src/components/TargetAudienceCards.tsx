@@ -40,7 +40,7 @@ export default function TargetAudienceCards() {
         'Clearance maintenance guidance',
         'Remote work opportunities'
       ],
-      href: '/audience/national-guard',
+      href: '/features#national-guard',
       color: 'primary'
     },
     {
@@ -59,7 +59,7 @@ export default function TargetAudienceCards() {
         'Contract negotiation support',
         'Security+ certification prep'
       ],
-      href: '/audience/reservists',
+      href: '/features#reservists',
       color: 'blue'
     },
     {
@@ -78,7 +78,7 @@ export default function TargetAudienceCards() {
         'Resume translation services',
         'Interview preparation workshops'
       ],
-      href: '/audience/transitioning-military',
+      href: '/features#transitioning',
       color: 'green'
     },
     {
@@ -97,13 +97,19 @@ export default function TargetAudienceCards() {
         'Poly preparation resources',
         'Salary negotiation coaching'
       ],
-      href: '/audience/cleared-professionals',
+      href: '/features#veterans',
       color: 'purple'
     }
   ]
 
   const getColorClasses = (color: string) => {
-    const colors = {
+    const colors: Record<string, {
+      bg: string
+      border: string
+      icon: string
+      hover: string
+      button: string
+    }> = {
       primary: {
         bg: 'bg-primary-50 dark:bg-primary-900/20',
         border: 'border-primary-200 dark:border-primary-800',
@@ -228,10 +234,10 @@ export default function TargetAudienceCards() {
         {/* Mobile-friendly "See All" Button */}
         <div className="text-center mt-12 lg:hidden">
           <Link
-            href="/audience"
+            href="/features"
             className="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
-            Explore All Audiences
+            Explore All Features
             <ChevronRight className="h-5 w-5 ml-2" />
           </Link>
         </div>
