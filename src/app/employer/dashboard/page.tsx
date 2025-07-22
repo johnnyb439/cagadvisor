@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Users, Briefcase, Clock, TrendingUp, ChevronRight, MoreVertical, Eye, Home, Search, Database, Calendar, MessageSquare } from 'lucide-react'
-import ClearanceVerification from '@/components/employer/ClearanceVerification'
+import { Plus, Users, Briefcase, Clock, TrendingUp, ChevronRight, MoreVertical, Eye, Home, Search, Calendar, MessageSquare } from 'lucide-react'
 import ResumeParser from '@/components/employer/ResumeParser'
 import TalentRadar from '@/components/employer/TalentRadar'
 import CandidateActivityTracker from '@/components/employer/CandidateActivityTracker'
@@ -28,7 +27,7 @@ interface JobPosting {
 }
 
 export default function EmployerDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'talent-radar' | 'verification' | 'pipelines' | 'activity' | 'messaging'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'talent-radar' | 'pipelines' | 'activity' | 'messaging'>('overview')
 
   const stats = {
     activeJobs: 12,
@@ -73,7 +72,6 @@ export default function EmployerDashboardPage() {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Home },
     { id: 'talent-radar', label: 'Talent Radar', icon: Search },
-    { id: 'verification', label: 'Verification', icon: Database },
     { id: 'pipelines', label: 'Pipelines', icon: Users },
     { id: 'activity', label: 'Activity', icon: Clock },
     { id: 'messaging', label: 'Messages', icon: MessageSquare },
@@ -264,11 +262,6 @@ export default function EmployerDashboardPage() {
           </div>
         )}
 
-        {activeTab === 'verification' && (
-          <div className="max-w-4xl mx-auto">
-            <ClearanceVerification />
-          </div>
-        )}
 
         {activeTab === 'pipelines' && (
           <TalentPipelines />
