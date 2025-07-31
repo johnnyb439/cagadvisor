@@ -24,9 +24,8 @@ const EnhancedInput = forwardRef<HTMLInputElement, EnhancedInputProps>(
               {icon}
             </div>
           )}
-          <motion.input
+          <input
             ref={ref}
-            whileFocus={{ scale: 1.01 }}
             className={`
               w-full ${icon ? 'pl-10' : 'pl-4'} pr-4 py-3 
               border border-gray-300 dark:border-gray-600 
