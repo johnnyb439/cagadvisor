@@ -247,6 +247,22 @@
   transition: none !important;
 }
 
+/* reCAPTCHA Badge Positioning */
+.grecaptcha-badge {
+  bottom: 14px !important;
+  left: 14px !important;
+  right: auto !important;
+  z-index: 30 !important; /* Below chat button (z-40) and chat window (z-50) */
+}
+
+/* Ensure chat button doesn't conflict with reCAPTCHA on mobile */
+@media (max-width: 640px) {
+  .grecaptcha-badge {
+    transform: scale(0.9);
+    transform-origin: bottom left;
+  }
+}
+
 /* Improved dark mode scrollbar */
 .dark::-webkit-scrollbar {
   background-color: #1f2937;

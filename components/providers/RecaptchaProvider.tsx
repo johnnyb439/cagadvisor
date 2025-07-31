@@ -24,6 +24,12 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
         appendTo: 'head',
         nonce: undefined,
       }}
+      container={{
+        parameters: {
+          badge: 'bottomleft',
+          theme: 'light'
+        }
+      }}
     >
       {children}
     </GoogleReCaptchaProvider>
