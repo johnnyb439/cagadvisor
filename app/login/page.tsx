@@ -5,9 +5,11 @@ import { motion } from 'framer-motion'
 import { User, Lock, Shield, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { executeRecaptcha, isEnabled: isCaptchaEnabled } = useRecaptcha()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -18,21 +20,53 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    // Simulate login - in production this would connect to your auth system
-    setTimeout(() => {
-      if (email && password) {
-        // Store minimal user data in localStorage for demo
-        localStorage.setItem('user', JSON.stringify({
-          email,
-          name: email.split('@')[0],
-          clearanceLevel: 'SECRET'
-        }))
-        router.push('/dashboard')
-      } else {
-        setError('Please enter both email and password')
-        setLoading(false)
+    try {
+      // Execute reCAPTCHA if enabled
+      if (isCaptchaEnabled) {
+        const token = await executeRecaptcha('login')
+        
+        if (!token) {
+          setError('reCAPTCHA verification failed. Please try again.')
+          setLoading(false)
+          return
+        }
+
+        // Verify the token on the server
+        const verifyResponse = await fetch('/api/auth/verify-captcha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, action: 'login' })
+        })
+
+        const verifyResult = await verifyResponse.json()
+
+        if (!verifyResult.success) {
+          setError('Security verification failed. Please try again.')
+          setLoading(false)
+          return
+        }
       }
-    }, 1000)
+
+      // Simulate login - in production this would connect to your auth system
+      setTimeout(() => {
+        if (email && password) {
+          // Store minimal user data in localStorage for demo
+          localStorage.setItem('user', JSON.stringify({
+            email,
+            name: email.split('@')[0],
+            clearanceLevel: 'SECRET'
+          }))
+          router.push('/dashboard')
+        } else {
+          setError('Please enter both email and password')
+          setLoading(false)
+        }
+      }, 1000)
+    } catch (err) {
+      console.error('Login error:', err)
+      setError('An error occurred. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -126,6 +160,11 @@ export default function LoginPage() {
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
               <strong>Security Notice:</strong> We never store sensitive clearance information. 
               Your privacy is our priority.
+              {isCaptchaEnabled && (
+                <span className="block mt-2">
+                  Protected by reCAPTCHA v3
+                </span>
+              )}
             </p>
           </div>
 

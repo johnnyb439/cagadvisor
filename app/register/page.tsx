@@ -5,9 +5,11 @@ import { motion } from 'framer-motion'
 import { User, Mail, Lock, Shield, AlertCircle, Check } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useRecaptcha } from '@/hooks/useRecaptcha'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { executeRecaptcha, isEnabled: isCaptchaEnabled } = useRecaptcha()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -41,16 +43,48 @@ export default function RegisterPage() {
 
     setLoading(true)
 
-    // Simulate registration - in production this would connect to your auth system
-    setTimeout(() => {
-      // Store user data
-      localStorage.setItem('user', JSON.stringify({
-        email: formData.email,
-        name: formData.name,
-        clearanceLevel: formData.clearanceLevel
-      }))
-      router.push('/dashboard')
-    }, 1000)
+    try {
+      // Execute reCAPTCHA if enabled
+      if (isCaptchaEnabled) {
+        const token = await executeRecaptcha('register')
+        
+        if (!token) {
+          setError('reCAPTCHA verification failed. Please try again.')
+          setLoading(false)
+          return
+        }
+
+        // Verify the token on the server
+        const verifyResponse = await fetch('/api/auth/verify-captcha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, action: 'register' })
+        })
+
+        const verifyResult = await verifyResponse.json()
+
+        if (!verifyResult.success) {
+          setError('Security verification failed. Please try again.')
+          setLoading(false)
+          return
+        }
+      }
+
+      // Simulate registration - in production this would connect to your auth system
+      setTimeout(() => {
+        // Store user data
+        localStorage.setItem('user', JSON.stringify({
+          email: formData.email,
+          name: formData.name,
+          clearanceLevel: formData.clearanceLevel
+        }))
+        router.push('/dashboard')
+      }, 1000)
+    } catch (err) {
+      console.error('Registration error:', err)
+      setError('An error occurred. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (

@@ -32,7 +32,8 @@
       "Bash(xcopy:*)",
       "Bash(robocopy:*)",
       "Bash(dir:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }
