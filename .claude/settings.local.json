@@ -38,7 +38,9 @@
       "Bash(ls:*)",
       "Bash(set PORT=3005)",
       "Bash(Remove-Item test-layout.tsx, test-login.tsx, test-fixes.ps1, apply-fixes.ps1 -Force)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebFetch(domain:cagadvisor.vercel.app)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
