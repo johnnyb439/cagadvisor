@@ -24,31 +24,27 @@ Write-Host "===========================================" -ForegroundColor Cyan
 
 # Delete previous local backups to save space
 Write-Host "`nCleaning up old local backups..." -ForegroundColor Yellow
-try {
-    $existingBackups = Get-ChildItem -Path $localBackupRoot -Directory -Filter "checkpoint_*" -ErrorAction SilentlyContinue
-    if ($existingBackups) {
-        $backupCount = @($existingBackups).Count
-        Write-Host "   Found $backupCount old backup(s). Removing..." -ForegroundColor Gray
-        $existingBackups | Remove-Item -Recurse -Force
-        Write-Host "   Old backups removed!" -ForegroundColor Green
-    } else {
-        Write-Host "   No old backups found." -ForegroundColor Gray
-    }
-} catch {
-    Write-Host "   Error cleaning up: $_" -ForegroundColor Red
+$existingBackups = Get-ChildItem -Path $localBackupRoot -Directory -Filter "checkpoint_*" -ErrorAction SilentlyContinue
+if ($existingBackups) {
+    $backupCount = $existingBackups.Count
+    Write-Host "   Found $backupCount old backup(s). Removing..." -ForegroundColor Gray
+    $existingBackups | Remove-Item -Recurse -Force
+    Write-Host "   ✓ Old backups removed!" -ForegroundColor Green
+} else {
+    Write-Host "   No old backups found." -ForegroundColor Gray
 }
 
 # Backup to OneDrive (no deletion - unlimited space)
 Write-Host "`n1. Backing up to OneDrive..." -ForegroundColor Green
 Write-Host "   Location: $oneDriveDestination" -ForegroundColor Gray
 Copy-Item -Path $source -Destination $oneDriveDestination -Recurse -Force -Exclude "node_modules", ".next", "nul", "backups"
-Write-Host "   OneDrive backup completed!" -ForegroundColor Green
+Write-Host "   ✓ OneDrive backup completed!" -ForegroundColor Green
 
 # Backup to local directory
 Write-Host "`n2. Backing up to local directory..." -ForegroundColor Green
 Write-Host "   Location: $localDestination" -ForegroundColor Gray
 Copy-Item -Path $source -Destination $localDestination -Recurse -Force -Exclude "node_modules", ".next", "nul", "backups"
-Write-Host "   Local backup completed!" -ForegroundColor Green
+Write-Host "   ✓ Local backup completed!" -ForegroundColor Green
 
 Write-Host "`n===========================================" -ForegroundColor Cyan
 Write-Host "CHECKPOINT SAVED SUCCESSFULLY!" -ForegroundColor Green

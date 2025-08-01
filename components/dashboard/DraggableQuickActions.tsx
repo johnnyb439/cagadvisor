@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   DndContext,
@@ -34,7 +34,7 @@ interface QuickAction {
   id: string
   title: string
   description: string
-  icon: any
+  icon: React.ComponentType<{ size?: number; className?: string }>
   color: string
   href: string
   visible: boolean
@@ -284,7 +284,7 @@ export default function DraggableQuickActions() {
                     : 'bg-gray-200 dark:bg-gray-900 text-gray-400 dark:text-gray-600 line-through'
                 }`}
               >
-                <action.icon size={16} className="mr-2" />
+                {React.createElement(action.icon, { size: 16, className: "mr-2" })}
                 <span className="truncate">{action.title}</span>
               </button>
             ))}
@@ -329,7 +329,7 @@ export default function DraggableQuickActions() {
                 if (!action) return null
                 return (
                   <div className="flex items-center p-4 border rounded-lg bg-white dark:bg-gray-800 shadow-lg">
-                    <action.icon className={`${action.color} mr-3`} size={24} />
+                    {React.createElement(action.icon, { className: `${action.color} mr-3`, size: 24 })}
                     <div>
                       <p className="font-semibold">{action.title}</p>
                       <p className="text-sm text-gray-600 dark:text-gray-400">{action.description}</p>

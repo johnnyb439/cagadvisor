@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
       "Bash(git push:*)",
@@ -33,7 +34,11 @@
       "Bash(robocopy:*)",
       "Bash(dir:*)",
       "Bash(git remote add:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(set PORT=3005)",
+      "Bash(Remove-Item test-layout.tsx, test-login.tsx, test-fixes.ps1, apply-fixes.ps1 -Force)",
+      "Bash(node:*)"
     ],
     "deny": []
   }

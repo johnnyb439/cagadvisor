@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "user_1753982482225",
+      "email": "test@test.com",
+      "password": "$2b$10$aFkM2FcQCAXKt9.vMByjVuEv1Wfd3C0V81qOd658C/dNnHS1m7xyG",
+      "name": "test",
+      "clearanceLevel": "Public Trust",
+      "createdAt": "2025-07-31T17:21:22.225Z"
+    },
+    {
+      "id": "user_1754058448481",
+      "email": "testtest@test.com",
+      "password": "$2b$10$ZhV3y4Hfyxhb8H1rMuCGxe0kVMjBzzTpdXbHMI0xavH3lCUululE2",
+      "name": "testtest",
+      "clearanceLevel": "Public Trust",
+      "createdAt": "2025-08-01T14:27:28.481Z"
+    },
+    {
+      "id": "user_1754060979466",
+      "email": "123@123.com",
+      "password": "$2b$10$OoWi0c0WjWb9IrxOQqBAL.sLhHX8h85RTj78qCoTyw9dRPNOz.VUy",
+      "name": "123",
+      "clearanceLevel": "Public Trust",
+      "createdAt": "2025-08-01T15:09:39.466Z"
+    }
+  ]
+}

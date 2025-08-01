@@ -13,17 +13,17 @@ This document outlines the task distribution between Developer A and Developer B
 3. **[A-sec-3]** Implement password hashing with bcrypt
 4. **[A-sec-4]** Replace localStorage with secure HTTP-only cookies
 5. **[A-sec-5]** Add rate limiting for login attempts
-6. **[A-func-1]** Connect job board to real database (Supabase/PostgreSQL)
-7. **[A-func-2]** Implement real file storage for resume uploads
+6. **[A-func-1]** Connect job board to real database (Local JSON file storage)
+7. **[A-func-2]** Implement real file storage for resume uploads (Local filesystem)
 
 ### Medium Priority Tasks
 8. **[A-sec-7]** Add MFA/2FA authentication option
 9. **[A-sec-8]** Implement forgot password functionality
 10. **[A-func-5]** Implement job application tracking system
-11. **[A-func-6]** Add email notification system
+11. **[A-func-6]** Add email notification system (Console logs for local testing)
 
 ### Low Priority Tasks
-12. **[A-func-7]** Implement Stripe payment integration
+12. **[A-func-7]** Implement Stripe payment integration (Test mode only)
 
 ---
 
@@ -63,11 +63,11 @@ This document outlines the task distribution between Developer A and Developer B
 - **Forgot Password**: Create password reset flow with email verification
 
 #### Backend Infrastructure
-- **Database Integration**: Connect job listings to real PostgreSQL/Supabase database
-- **File Storage**: Implement cloud storage (AWS S3 or similar) for resume uploads
+- **Database Integration**: Connect job listings to local JSON file storage (no external database)
+- **File Storage**: Implement local filesystem storage for resume uploads (public/uploads folder)
 - **Application Tracking**: Build system to track job applications per user
-- **Email System**: Set up transactional email service for notifications
-- **Payment Processing**: Integrate Stripe for premium features
+- **Email System**: Set up email notification system with console logs for local testing
+- **Payment Processing**: Integrate Stripe in test mode for premium features (no real payments)
 
 ### Developer B Task Descriptions
 
@@ -115,17 +115,17 @@ This document outlines the task distribution between Developer A and Developer B
 
 ### Developer A Progress
 - [x] A-sec-1: CAPTCHA implementation ✅ (Completed 2025-01-31)
-- [ ] A-sec-2: NextAuth.js backend
-- [ ] A-sec-3: Password hashing
-- [ ] A-sec-4: Secure cookies
-- [ ] A-sec-5: Rate limiting
-- [ ] A-func-1: Database integration
-- [ ] A-func-2: File storage
-- [ ] A-sec-7: MFA/2FA
-- [ ] A-sec-8: Forgot password
-- [ ] A-func-5: Application tracking
-- [ ] A-func-6: Email system
-- [ ] A-func-7: Stripe integration
+- [x] A-sec-2: NextAuth.js backend ✅ (Completed 2025-01-31)
+- [x] A-sec-3: Password hashing ✅ (Completed 2025-01-31)
+- [x] A-sec-4: Secure cookies ✅ (Completed 2025-01-31)
+- [x] A-sec-5: Rate limiting ✅ (Completed 2025-01-31)
+- [ ] A-func-1: Database integration (Local JSON)
+- [ ] A-func-2: File storage (Local filesystem)
+- [ ] A-sec-7: MFA/2FA (TOTP-based)
+- [ ] A-sec-8: Forgot password (Local email simulation)
+- [ ] A-func-5: Application tracking (Local JSON)
+- [ ] A-func-6: Email system (Console logs for local)
+- [ ] A-func-7: Stripe integration (Test mode only)
 
 ### Developer B Progress
 - [ ] B-vis-1: ARIA labels

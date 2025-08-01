@@ -1,72 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { motion } from 'framer-motion'
 import { User, Lock, Shield, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useRecaptcha } from '@/hooks/useRecaptcha'
+import { loginAction } from './actions'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { executeRecaptcha, isEnabled: isCaptchaEnabled } = useRecaptcha()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
 
-    try {
-      // Execute reCAPTCHA if enabled
-      if (isCaptchaEnabled) {
-        const token = await executeRecaptcha('login')
-        
-        if (!token) {
-          setError('reCAPTCHA verification failed. Please try again.')
-          setLoading(false)
-          return
-        }
-
-        // Verify the token on the server
-        const verifyResponse = await fetch('/api/auth/verify-captcha', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, action: 'login' })
-        })
-
-        const verifyResult = await verifyResponse.json()
-
-        if (!verifyResult.success) {
-          setError('Security verification failed. Please try again.')
-          setLoading(false)
-          return
-        }
+    const formData = new FormData(e.currentTarget)
+    
+    // Use NextAuth signIn
+    startTransition(async () => {
+      const result = await loginAction(null, formData)
+      if (result?.error) {
+        setError(result.error)
       }
-
-      // Simulate login - in production this would connect to your auth system
-      setTimeout(() => {
-        if (email && password) {
-          // Store minimal user data in localStorage for demo
-          localStorage.setItem('user', JSON.stringify({
-            email,
-            name: email.split('@')[0],
-            clearanceLevel: 'SECRET'
-          }))
-          router.push('/dashboard')
-        } else {
-          setError('Please enter both email and password')
-          setLoading(false)
-        }
-      }, 1000)
-    } catch (err) {
-      console.error('Login error:', err)
-      setError('An error occurred. Please try again.')
-      setLoading(false)
-    }
+    })
   }
 
   return (
@@ -98,11 +56,11 @@ export default function LoginPage() {
                 <input
                   type="email"
                   id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green"
-                  placeholder="john.doe@email.com"
+                  name="email"
                   required
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
+                  placeholder="your.email@example.com"
+                  disabled={isPending}
                 />
               </div>
             </div>
@@ -116,42 +74,41 @@ export default function LoginPage() {
                 <input
                   type="password"
                   id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green"
-                  placeholder="••••••••"
+                  name="password"
                   required
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
+                  placeholder="Enter your password"
+                  disabled={isPending}
                 />
               </div>
             </div>
 
+            {/* Error Message */}
             {error && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex items-center p-3 bg-red-50 text-red-700 rounded-lg"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2"
               >
-                <AlertCircle size={20} className="mr-2" />
-                <span className="text-sm">{error}</span>
+                <AlertCircle size={20} className="text-red-600 dark:text-red-400 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  {error.includes('Too many login attempts') && (
+                    <p className="text-xs text-red-500 dark:text-red-300 mt-1">
+                      You have been temporarily blocked due to multiple failed login attempts. 
+                      Please wait before trying again.
+                    </p>
+                  )}
+                </div>
               </motion.div>
             )}
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Remember me</span>
-              </label>
-              <Link href="/forgot-password" className="text-sm text-dynamic-green hover:text-emerald-green">
-                Forgot password?
-              </Link>
-            </div>
-
             <button
               type="submit"
-              disabled={loading}
-              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isPending}
+              className="w-full bg-gradient-to-r from-dynamic-green to-dynamic-blue text-white py-3 rounded-lg hover:from-emerald-green hover:to-cyber-cyan transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Logging in...' : 'Log In'}
+              {isPending ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
@@ -160,11 +117,6 @@ export default function LoginPage() {
             <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
               <strong>Security Notice:</strong> We never store sensitive clearance information. 
               Your privacy is our priority.
-              {isCaptchaEnabled && (
-                <span className="block mt-2">
-                  Protected by reCAPTCHA v3
-                </span>
-              )}
             </p>
           </div>
 
@@ -173,7 +125,7 @@ export default function LoginPage() {
             <p className="text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
               <Link href="/register" className="text-dynamic-green hover:text-emerald-green font-semibold">
-                Sign up free
+                Sign up here
               </Link>
             </p>
           </div>

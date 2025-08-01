@@ -3,7 +3,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import LiveChat from '@/components/LiveChat'
-import { RecaptchaProvider } from '@/components/providers/RecaptchaProvider'
+import { AuthProvider } from '@/components/providers/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'Cleared Advisory Group - Your Gateway to Cleared IT Opportunities',
@@ -19,14 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-white dark:bg-command-black">
-        <RecaptchaProvider>
+        <AuthProvider>
           <Navbar />
           <main className="pt-20">
             {children}
           </main>
           <Footer />
           <LiveChat />
-        </RecaptchaProvider>
+        </AuthProvider>
       </body>
     </html>
   )

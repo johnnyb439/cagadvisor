@@ -18,39 +18,31 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 import Analytics from '@/components/dashboard/Analytics'
 import GoalTracking from '@/components/dashboard/GoalTracking'
 import PersonalizedRecommendations from '@/components/dashboard/PersonalizedRecommendations'
 import DraggableQuickActions from '@/components/dashboard/DraggableQuickActions'
 
-interface UserData {
-  email: string
-  name: string
-  clearanceLevel: string
-}
-
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<UserData | null>(null)
+  const { data: session, status } = useSession()
   const [activeTab, setActiveTab] = useState('overview')
   const [showAllActivities, setShowAllActivities] = useState(false)
 
   useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem('user')
-    if (userData) {
-      setUser(JSON.parse(userData))
-    } else {
+    if (status === 'loading') return
+    if (!session) {
       router.push('/login')
     }
-  }, [router])
+  }, [session, status, router])
 
-  const handleLogout = () => {
-    localStorage.removeItem('user')
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
     router.push('/login')
   }
 
-  if (!user) {
+  if (status === 'loading' || !session) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-ops-charcoal py-20 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-dynamic-green"></div>
@@ -119,10 +111,10 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-montserrat font-bold mb-1">
-                Welcome back, {user.name}!
+                Welcome back, {session.user?.name || 'User'}!
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Clearance Level: <span className="text-dynamic-green font-semibold">{user.clearanceLevel}</span>
+                Clearance Level: <span className="text-dynamic-green font-semibold">{session.user?.clearanceLevel || 'Not specified'}</span>
               </p>
             </div>
             <button
