@@ -1,6 +1,51 @@
 import { NextResponse } from 'next/server'
 import { createUser } from '@/auth.config'
-import { checkRateLimit, recordAttempt, resetRateLimit } from '@/lib/rate-limit'
+
+// Simplified rate limiting for CodeSandbox
+const rateLimitStore = new Map<string, {
+  attempts: number
+  firstAttempt: number
+  blockedUntil?: number
+}>()
+
+const MAX_ATTEMPTS = 5
+const WINDOW_MS = 15 * 60 * 1000
+const BLOCK_DURATION_MS = 60 * 60 * 1000
+
+async function checkRateLimit(identifier: string) {
+  const now = Date.now()
+  const entry = rateLimitStore.get(identifier)
+  
+  if (entry?.blockedUntil && entry.blockedUntil > now) {
+    return { allowed: false, blockedUntil: entry.blockedUntil }
+  }
+  
+  if (entry && now - entry.firstAttempt < WINDOW_MS) {
+    if (entry.attempts >= MAX_ATTEMPTS) {
+      entry.blockedUntil = now + BLOCK_DURATION_MS
+      return { allowed: false, blockedUntil: entry.blockedUntil }
+    }
+  }
+  
+  return { allowed: true }
+}
+
+async function recordAttempt(identifier: string) {
+  const now = Date.now()
+  let entry = rateLimitStore.get(identifier)
+  
+  if (!entry || now - entry.firstAttempt >= WINDOW_MS) {
+    entry = { attempts: 1, firstAttempt: now }
+  } else {
+    entry.attempts++
+  }
+  
+  rateLimitStore.set(identifier, entry)
+}
+
+async function resetRateLimit(identifier: string) {
+  rateLimitStore.delete(identifier)
+}
 
 export async function POST(request: Request) {
   try {
