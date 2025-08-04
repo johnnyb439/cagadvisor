@@ -18,11 +18,13 @@ export default function RegisterPage() {
     agreeToTerms: false
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
@@ -62,18 +64,29 @@ export default function RegisterPage() {
         throw new Error(data.error || 'Registration failed')
       }
 
-      // Automatically sign in after registration
-      const signInResult = await signIn('credentials', {
-        email: formData.email,
-        password: formData.password,
-        redirect: false
-      })
+      // Show success message
+      setSuccess('🎉 Your account has been created successfully!')
+      setLoading(false)
+      
+      // Try to automatically sign in after registration
+      setTimeout(async () => {
+        setSuccess('Logging you in...')
+        const signInResult = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false
+        })
 
-      if (signInResult?.error) {
-        throw new Error('Registration successful but login failed. Please try logging in.')
-      }
-
-      router.push('/dashboard')
+        if (signInResult?.error) {
+          setSuccess('')
+          setError('Account created! Please login with your new credentials.')
+          setTimeout(() => {
+            router.push('/login')
+          }, 2000)
+        } else {
+          router.push('/dashboard')
+        }
+      }, 1500)
     } catch (err: any) {
       console.error('Registration error:', err)
       setError(err.message || 'An error occurred. Please try again.')
@@ -223,8 +236,20 @@ export default function RegisterPage() {
               </label>
             </div>
 
+            {/* Success Message */}
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-3"
+              >
+                <Check size={20} className="text-green-600 dark:text-green-400 mt-0.5" />
+                <p className="text-sm text-green-600 dark:text-green-400 font-medium">{success}</p>
+              </motion.div>
+            )}
+
             {/* Error Message */}
-            {error && (
+            {error && !success && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
