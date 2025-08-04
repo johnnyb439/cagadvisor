@@ -63,46 +63,42 @@ export default function RegisterPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed')
+        // Show the specific error message from the API
+        setError(data.error || 'Registration failed')
+        setLoading(false)
+        return
       }
 
-      // Show success message
+      // Registration successful!
       setSuccess('🎉 Your account has been created successfully!')
-      setLoading(false)
+      setError('')
       
-      // Try to automatically sign in after registration
+      // Wait a moment to show success message
       setTimeout(async () => {
-        setSuccess('Logging you in...')
-        try {
-          const signInResult = await signIn('credentials', {
-            email: formData.email,  // This will work with email or username
-            password: formData.password,
-            redirect: false
-          })
+        setSuccess('✅ Account created! Signing you in...')
+        
+        // Try to sign in automatically
+        const signInResult = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false
+        })
 
-          if (signInResult?.error) {
-            // Don't throw error, just redirect to login with success message
-            setSuccess('✅ Account created successfully! Please login with your credentials.')
-            setError('')
-            setTimeout(() => {
-              router.push(`/login?registered=true&email=${encodeURIComponent(formData.email)}`)
-            }, 2000)
-          } else if (signInResult?.ok) {
-            // Login successful
-            router.push('/dashboard')
-          }
-        } catch (err) {
-          // Don't throw, gracefully redirect to login
-          setSuccess('✅ Account created! Redirecting to login...')
-          setError('')
+        if (signInResult?.ok) {
+          // Successfully signed in, redirect to dashboard
+          router.push('/dashboard')
+        } else {
+          // Sign in failed, redirect to login page with success message
+          setSuccess('✅ Account created successfully! Please login with your credentials.')
           setTimeout(() => {
             router.push(`/login?registered=true&email=${encodeURIComponent(formData.email)}`)
-          }, 1500)
+          }, 2000)
         }
       }, 1500)
+
     } catch (err: any) {
       console.error('Registration error:', err)
-      setError(err.message || 'An error occurred. Please try again.')
+      setError('An error occurred. Please try again.')
       setLoading(false)
     }
   }

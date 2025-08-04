@@ -1,15 +1,10 @@
 import { NextResponse } from 'next/server'
+import { clearAllUsers, getUsersDB } from '@/auth.config'
 
-// This endpoint clears all in-memory users (for testing)
+// POST endpoint to clear all users
 export async function POST() {
   try {
-    // Clear the in-memory users array
-    const authConfig = await import('@/auth.config')
-    
-    // Access the IN_MEMORY_USERS array and clear it
-    if (global.IN_MEMORY_USERS) {
-      global.IN_MEMORY_USERS.length = 0
-    }
+    clearAllUsers()
     
     return NextResponse.json({
       success: true,
@@ -27,14 +22,13 @@ export async function POST() {
 // GET endpoint to check how many users exist
 export async function GET() {
   try {
-    const authConfig = await import('@/auth.config')
-    const db = authConfig.getUsersDB()
+    const users = getUsersDB()
     
     return NextResponse.json({
-      totalUsers: db.users.length,
-      users: db.users.map((u: any) => ({
+      totalUsers: users.length,
+      users: users.map(u => ({
         email: u.email,
-        username: u.username || 'N/A'
+        username: u.username
       })),
       message: 'These users are currently registered in memory'
     })

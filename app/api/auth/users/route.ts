@@ -1,23 +1,19 @@
 import { NextResponse } from 'next/server'
+import { getUsersDB } from '@/auth.config'
 
-// This endpoint shows all registered users (for testing only)
 export async function GET() {
-  // Import the auth config to access the in-memory users
-  const authConfig = await import('@/auth.config')
+  const users = getUsersDB()
   
-  // Get current users
-  const db = authConfig.getUsersDB ? authConfig.getUsersDB() : { users: [] }
-  
-  // Hide passwords in response
-  const safeUsers = db.users.map((user: any) => ({
+  // Return users without passwords
+  const safeUsers = users.map(user => ({
     id: user.id,
     email: user.email,
-    username: user.username || 'N/A',
+    username: user.username,
     name: user.name,
     clearanceLevel: user.clearanceLevel,
-    createdAt: user.createdAt || 'N/A'
+    createdAt: user.createdAt
   }))
-  
+
   return NextResponse.json({
     message: 'Registered Users (in current session)',
     totalUsers: safeUsers.length,
@@ -25,6 +21,3 @@ export async function GET() {
     note: 'Users are stored in memory and will be lost on server restart'
   })
 }
-
-// Export the getUsersDB function for this endpoint
-export { getUsersDB } from '@/auth.config'

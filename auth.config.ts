@@ -2,74 +2,135 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 
-// Detect CodeSandbox environment
-const isCodeSandbox = typeof process !== 'undefined' && (
-  process.env.CODESANDBOX_HOST || 
-  process.env.HOSTNAME?.includes('csb.app') ||
-  process.env.NEXTAUTH_URL?.includes('csb.app') ||
-  process.env.CODESANDBOX_SSE === '1'
-)
+// Extend the built-in session types
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string
+      email: string
+      name: string
+      clearanceLevel?: string
+      username?: string
+    }
+  }
 
-// Check if we're in production (Vercel/CodeSandbox)  
-const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || isCodeSandbox
+  interface User {
+    clearanceLevel?: string
+    username?: string
+  }
+}
 
-// In-memory user storage for CodeSandbox (resets on server restart)
-// This allows testing registration without file system access
-// Make it global so it can be accessed from other files
+declare module 'next-auth/jwt' {
+  interface JWT {
+    clearanceLevel?: string
+    username?: string
+  }
+}
+
+// Simple in-memory user storage for development/CodeSandbox
+interface StoredUser {
+  id: string
+  email: string
+  username: string
+  name: string
+  password: string
+  clearanceLevel: string
+  createdAt: string
+}
+
+// Initialize in-memory storage
 if (!global.IN_MEMORY_USERS) {
   global.IN_MEMORY_USERS = []
 }
-const IN_MEMORY_USERS = global.IN_MEMORY_USERS as any[]
 
-// Default demo users - starts empty, fills with registered users
-const DEFAULT_USERS = [
-  // Registered users will be stored here during the session
-  // Note: These will be lost when the server restarts
-  // Format: { id, email, username, password, name, clearanceLevel }
-]
-
-// Helper functions for user management
-export function getUsersDB() {
-  // Use in-memory storage for CodeSandbox/production
-  if (isProduction) {
-    // Combine default users with newly registered users
-    return { users: [...DEFAULT_USERS, ...IN_MEMORY_USERS] }
-  }
-  
-  // In development, try to use local file
-  try {
-    const fs = require('fs')
-    const path = require('path')
-    const dbPath = path.join(process.cwd(), 'data', 'users.json')
-    if (fs.existsSync(dbPath)) {
-      const data = fs.readFileSync(dbPath, 'utf-8')
-      return JSON.parse(data)
-    }
-  } catch (error) {
-    console.error('Failed to read users.json:', error)
-  }
-  
-  return { users: DEFAULT_USERS }
+// Get users from memory
+export function getUsersDB(): StoredUser[] {
+  return global.IN_MEMORY_USERS as StoredUser[]
 }
 
-function saveUsersDB(db: any) {
-  // Only save in development, never in production/CodeSandbox
-  if (!isProduction) {
-    try {
-      const fs = require('fs')
-      const path = require('path')
-      const dbPath = path.join(process.cwd(), 'data', 'users.json')
-      fs.writeFileSync(dbPath, JSON.stringify(db, null, 2))
-    } catch (error) {
-      console.error('Failed to save users.json:', error)
-    }
-  }
+// Add a new user
+export function addUser(user: StoredUser): void {
+  const users = getUsersDB()
+  users.push(user)
 }
 
-// HARDCODED SECRET for CodeSandbox - in production use environment variable
+// Find user by email or username
+export function findUser(identifier: string): StoredUser | undefined {
+  const users = getUsersDB()
+  const lowerIdentifier = identifier.toLowerCase()
+  return users.find(u => 
+    u.email.toLowerCase() === lowerIdentifier || 
+    u.username.toLowerCase() === lowerIdentifier
+  )
+}
+
+// Check if email exists
+export function emailExists(email: string): boolean {
+  const users = getUsersDB()
+  return users.some(u => u.email.toLowerCase() === email.toLowerCase())
+}
+
+// Check if username exists
+export function usernameExists(username: string): boolean {
+  const users = getUsersDB()
+  return users.some(u => u.username.toLowerCase() === username.toLowerCase())
+}
+
+// Clear all users
+export function clearAllUsers(): void {
+  global.IN_MEMORY_USERS = []
+}
+
+// Create a new user
+export async function createUser(
+  email: string,
+  username: string,
+  password: string,
+  name: string,
+  clearanceLevel: string
+): Promise<StoredUser> {
+  // Validate inputs
+  if (!email || !username || !password || !name) {
+    throw new Error('All fields are required')
+  }
+
+  // Check if email already exists
+  if (emailExists(email)) {
+    throw new Error(`Email "${email}" is already registered`)
+  }
+
+  // Check if username already exists
+  if (usernameExists(username)) {
+    throw new Error(`Username "${username}" is already taken`)
+  }
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  // Create new user
+  const newUser: StoredUser = {
+    id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    email: email.toLowerCase(),
+    username: username.toLowerCase(),
+    password: hashedPassword,
+    name,
+    clearanceLevel,
+    createdAt: new Date().toISOString()
+  }
+
+  // Add to storage
+  addUser(newUser)
+
+  console.log(`✅ User registered: ${email} (username: ${username})`)
+  console.log(`Total users: ${getUsersDB().length}`)
+
+  return newUser
+}
+
+// Auth configuration
 const authSecret = process.env.AUTH_SECRET || 
                   process.env.NEXTAUTH_SECRET || 
-                  'codesandbox-demo-secret-change-in-production-2024'
+                  'development-secret-key-change-in-production-2024'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: authSecret,
@@ -77,39 +138,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       name: 'credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
+        email: { label: 'Email or Username', type: 'text' },
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          throw new Error('Please enter your email/username and password')
         }
 
-        const db = getUsersDB()
-        // Find user by email OR username
-        const user = db.users.find((u: any) => 
-          u.email === credentials.email || 
-          u.username === credentials.email // Allow username in email field
-        )
+        // Find user by email or username
+        const user = findUser(credentials.email as string)
 
         if (!user) {
-          return null
+          throw new Error('No account found with this email or username')
         }
 
-        const isValid = await bcrypt.compare(
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(
           credentials.password as string,
           user.password
         )
-
-        if (!isValid) {
-          return null
+        
+        if (!isPasswordValid) {
+          throw new Error('Invalid password')
         }
 
+        // Return user object for session
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          clearanceLevel: user.clearanceLevel
+          clearanceLevel: user.clearanceLevel,
+          username: user.username
         }
       }
     })
@@ -127,6 +187,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id
         token.clearanceLevel = user.clearanceLevel
+        token.username = user.username
       }
       return token
     },
@@ -134,97 +195,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token && session.user) {
         session.user.id = token.id as string
         session.user.clearanceLevel = token.clearanceLevel as string
+        session.user.username = token.username as string
       }
       return session
     }
   },
   trustHost: true,
-  debug: isCodeSandbox // Enable debug in CodeSandbox
+  debug: false
 })
-
-// Helper function to create a new user
-export async function createUser(
-  email: string,
-  username: string,
-  password: string,
-  name: string,
-  clearanceLevel: string
-) {
-  // In production/CodeSandbox, save to in-memory storage
-  if (isProduction) {
-    // Check if user already exists in memory (by email or username)
-    const existingUserByEmail = IN_MEMORY_USERS.find(u => u.email === email)
-    const existingUserByUsername = IN_MEMORY_USERS.find(u => u.username === username)
-    
-    if (existingUserByEmail) {
-      throw new Error(`Email "${email}" is already registered. Try logging in instead.`)
-    }
-    if (existingUserByUsername) {
-      throw new Error(`Username "${username}" is already taken. Please choose a different username.`)
-    }
-    
-    // Hash password and create user
-    const hashedPassword = await bcrypt.hash(password, 10)
-    const newUser = {
-      id: `user_${Date.now()}`,
-      email,
-      username,
-      password: hashedPassword,
-      name,
-      clearanceLevel,
-      createdAt: new Date().toISOString()
-    }
-    
-    // Save to in-memory storage
-    IN_MEMORY_USERS.push(newUser)
-    console.log(`✅ User registered in memory: ${email}`)
-    console.log(`Total users in memory: ${IN_MEMORY_USERS.length}`)
-    
-    return {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-      clearanceLevel: newUser.clearanceLevel
-    }
-  }
-  
-  // In development, use file system
-  const db = getUsersDB()
-  
-  // Check if user already exists (by email or username)
-  const existingUser = db.users.find((u: any) => 
-    u.email === email || u.username === username
-  )
-  if (existingUser) {
-    if (existingUser.email === email) {
-      throw new Error('Email already registered')
-    }
-    if (existingUser.username === username) {
-      throw new Error('Username already taken')
-    }
-  }
-
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 10)
-  
-  // Create new user
-  const newUser = {
-    id: `user_${Date.now()}`,
-    email,
-    username,
-    password: hashedPassword,
-    name,
-    clearanceLevel,
-    createdAt: new Date().toISOString()
-  }
-
-  db.users.push(newUser)
-  saveUsersDB(db)
-
-  return {
-    id: newUser.id,
-    email: newUser.email,
-    name: newUser.name,
-    clearanceLevel: newUser.clearanceLevel
-  }
-}
