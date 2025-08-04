@@ -40,7 +40,11 @@
       "Bash(Remove-Item test-layout.tsx, test-login.tsx, test-fixes.ps1, apply-fixes.ps1 -Force)",
       "Bash(node:*)",
       "WebFetch(domain:cagadvisor.vercel.app)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(explorer:*)",
+      "Bash(start \"\" \"C:\\Users\\JohnnyBeast\\OneDrive\\CAG_Shared_Project\")",
+      "Bash(start https://codesandbox.io/dashboard/recent)",
+      "Bash(code:*)"
     ],
     "deny": []
   }

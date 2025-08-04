@@ -1,0 +1,45 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CAG WEBSITE - MAC COLLEAGUE QUICK START
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: OPEN THIS LINK
+-----------------------
+https://codesandbox.io/p/github/johnnyb439/cagadvisor/draft/epic-worker
+
+
+STEP 2: SIGN IN
+----------------
+Use GitHub or Google account
+
+
+STEP 3: YOU'RE IN!
+------------------
+• Left panel = Files
+• Center = Code editor  
+• Right = Live preview
+
+
+STEP 4: START EDITING
+---------------------
+Click any file → Make changes → See updates live!
+
+
+LIVE PREVIEW URL
+----------------
+https://dfv3s6-3000.csb.app/
+
+
+THAT'S IT! 
+----------
+We can now work together in real-time.
+I'm using VS Code + Claude AI on Windows.
+You're using CodeSandbox on Mac.
+Changes sync instantly between us!
+
+
+NEED HELP?
+----------
+Just edit this file with your question and I'll see it!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

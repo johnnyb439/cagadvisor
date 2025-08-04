@@ -98,6 +98,7 @@ export default function Hero() {
             Bridging the gap for National Guard, Reservists, Veterans, and cleared professionals 
             seeking lucrative government contracting careers.
           </p>
+          
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
