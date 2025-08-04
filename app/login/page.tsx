@@ -1,16 +1,33 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Lock, Shield, AlertCircle } from 'lucide-react'
+import { User, Lock, Shield, AlertCircle, Check } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { loginAction } from './actions'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  
+  useEffect(() => {
+    // Check if user just registered
+    if (searchParams.get('registered') === 'true') {
+      setSuccess('✅ Account created successfully! Please login with your credentials.')
+      // Pre-fill email if provided
+      const email = searchParams.get('email')
+      if (email) {
+        const emailInput = document.getElementById('email') as HTMLInputElement
+        if (emailInput) {
+          emailInput.value = email
+        }
+      }
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -83,8 +100,20 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* Success Message */}
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-2"
+              >
+                <Check size={20} className="text-green-600 dark:text-green-400 mt-0.5" />
+                <p className="text-sm text-green-600 dark:text-green-400 font-medium">{success}</p>
+              </motion.div>
+            )}
+
             {/* Error Message */}
-            {error && (
+            {error && !success && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}

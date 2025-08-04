@@ -73,20 +73,31 @@ export default function RegisterPage() {
       // Try to automatically sign in after registration
       setTimeout(async () => {
         setSuccess('Logging you in...')
-        const signInResult = await signIn('credentials', {
-          email: formData.email,
-          password: formData.password,
-          redirect: false
-        })
+        try {
+          const signInResult = await signIn('credentials', {
+            email: formData.email,  // This will work with email or username
+            password: formData.password,
+            redirect: false
+          })
 
-        if (signInResult?.error) {
-          setSuccess('')
-          setError('Account created! Please login with your new credentials.')
+          if (signInResult?.error) {
+            // Don't throw error, just redirect to login with success message
+            setSuccess('✅ Account created successfully! Please login with your credentials.')
+            setError('')
+            setTimeout(() => {
+              router.push(`/login?registered=true&email=${encodeURIComponent(formData.email)}`)
+            }, 2000)
+          } else if (signInResult?.ok) {
+            // Login successful
+            router.push('/dashboard')
+          }
+        } catch (err) {
+          // Don't throw, gracefully redirect to login
+          setSuccess('✅ Account created! Redirecting to login...')
+          setError('')
           setTimeout(() => {
-            router.push('/login')
-          }, 2000)
-        } else {
-          router.push('/dashboard')
+            router.push(`/login?registered=true&email=${encodeURIComponent(formData.email)}`)
+          }, 1500)
         }
       }, 1500)
     } catch (err: any) {
