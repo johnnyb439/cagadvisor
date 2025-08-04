@@ -3,6 +3,7 @@ import Credentials from 'next-auth/providers/credentials'
 
 // Edge-compatible auth configuration (no Node.js modules)
 export const { auth } = NextAuth({
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'development-secret-change-in-production',
   providers: [
     Credentials({
       name: 'credentials',

@@ -1,11 +1,27 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
-import { readFileSync, writeFileSync, existsSync } from 'fs'
-import { join } from 'path'
+
+// Check if we're in CodeSandbox
+const isCodeSandbox = typeof process !== 'undefined' && (
+  process.env.CODESANDBOX_HOST || 
+  process.env.HOSTNAME?.includes('csb.app') ||
+  process.env.NEXTAUTH_URL?.includes('csb.app')
+)
 
 // Check if we're in production (Vercel/CodeSandbox)
-const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.CODESANDBOX_HOST
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || isCodeSandbox
+
+// Only import fs modules if not in CodeSandbox
+let readFileSync: any, writeFileSync: any, existsSync: any, join: any
+if (!isCodeSandbox) {
+  const fs = require('fs')
+  const path = require('path')
+  readFileSync = fs.readFileSync
+  writeFileSync = fs.writeFileSync
+  existsSync = fs.existsSync
+  join = path.join
+}
 
 // Default demo users for production
 const DEFAULT_USERS = [
@@ -66,6 +82,7 @@ function saveUsersDB(db: any) {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'development-secret-change-in-production',
   providers: [
     Credentials({
       name: 'credentials',
