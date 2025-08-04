@@ -13,17 +13,22 @@ const isCodeSandbox = typeof process !== 'undefined' && (
 // Check if we're in production (Vercel/CodeSandbox)  
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || isCodeSandbox
 
-// Default demo users - CLEARED FOR CUSTOM ACCOUNTS
+// In-memory user storage for CodeSandbox (resets on server restart)
+// This allows testing registration without file system access
+const IN_MEMORY_USERS: any[] = []
+
+// Default demo users - starts empty, fills with registered users
 const DEFAULT_USERS = [
-  // Add your custom test accounts here
-  // Format: { id: 'unique_id', email: 'email@example.com', password: 'hashed_password', name: 'Name', clearanceLevel: 'Secret|Top Secret' }
+  // Registered users will be stored here during the session
+  // Note: These will be lost when the server restarts
 ]
 
 // Helper functions for user management
-function getUsersDB() {
-  // Always use default users in production/CodeSandbox
+export function getUsersDB() {
+  // Use in-memory storage for CodeSandbox/production
   if (isProduction) {
-    return { users: DEFAULT_USERS }
+    // Combine default users with newly registered users
+    return { users: [...DEFAULT_USERS, ...IN_MEMORY_USERS] }
   }
   
   // In development, try to use local file
@@ -135,15 +140,35 @@ export async function createUser(
   name: string,
   clearanceLevel: string
 ) {
-  // In production/CodeSandbox, registration is disabled for demo
+  // In production/CodeSandbox, save to in-memory storage
   if (isProduction) {
-    // For demo purposes, just return success but don't actually save
+    // Check if user already exists in memory
+    const existingUser = IN_MEMORY_USERS.find(u => u.email === email)
+    if (existingUser) {
+      throw new Error('User already exists')
+    }
+    
+    // Hash password and create user
     const hashedPassword = await bcrypt.hash(password, 10)
-    return {
+    const newUser = {
       id: `user_${Date.now()}`,
       email,
+      password: hashedPassword,
       name,
-      clearanceLevel
+      clearanceLevel,
+      createdAt: new Date().toISOString()
+    }
+    
+    // Save to in-memory storage
+    IN_MEMORY_USERS.push(newUser)
+    console.log(`✅ User registered in memory: ${email}`)
+    console.log(`Total users in memory: ${IN_MEMORY_USERS.length}`)
+    
+    return {
+      id: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+      clearanceLevel: newUser.clearanceLevel
     }
   }
   
