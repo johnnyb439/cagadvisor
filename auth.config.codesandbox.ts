@@ -10,14 +10,14 @@ const DEMO_USERS = [
   {
     id: 'user_demo_1',
     email: 'demo@cagadvisor.com',
-    password: '$2a$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u', // demo123
+    password: '$2b$10$QRESah7q31cZZgyNWBji4e.6zUWKRtrQmTSdRHClZq4LOVwkSdt1.', // demo123
     name: 'Demo User',
     clearanceLevel: 'Secret'
   },
   {
     id: 'user_admin_1',
     email: 'admin@cagadvisor.com',
-    password: '$2a$10$YPy8dPATPRPCp7mvQhtLz.nAPUZ/QjbD7DQpUe/QZhh4Dy5g1pYlG', // admin123
+    password: '$2b$10$Z.kjKiqTnebDBGtaqNRJX.AaXzMzOE8DJYKGOR4xb0BZYzYsuibOS', // admin123
     name: 'Admin User',
     clearanceLevel: 'Top Secret'
   }
