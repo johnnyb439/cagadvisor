@@ -2,8 +2,11 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 
 // Edge-compatible auth configuration (no Node.js modules)
+// HARDCODED SECRET for CodeSandbox compatibility
+const authSecret = 'codesandbox-demo-secret-change-in-production-2024'
+
 export const { auth } = NextAuth({
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'development-secret-change-in-production',
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || authSecret,
   providers: [
     Credentials({
       name: 'credentials',

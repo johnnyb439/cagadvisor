@@ -2,28 +2,18 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 
-// Check if we're in CodeSandbox
+// Detect CodeSandbox environment
 const isCodeSandbox = typeof process !== 'undefined' && (
   process.env.CODESANDBOX_HOST || 
   process.env.HOSTNAME?.includes('csb.app') ||
-  process.env.NEXTAUTH_URL?.includes('csb.app')
+  process.env.NEXTAUTH_URL?.includes('csb.app') ||
+  process.env.CODESANDBOX_SSE === '1'
 )
 
-// Check if we're in production (Vercel/CodeSandbox)
+// Check if we're in production (Vercel/CodeSandbox)  
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || isCodeSandbox
 
-// Only import fs modules if not in CodeSandbox
-let readFileSync: any, writeFileSync: any, existsSync: any, join: any
-if (!isCodeSandbox) {
-  const fs = require('fs')
-  const path = require('path')
-  readFileSync = fs.readFileSync
-  writeFileSync = fs.writeFileSync
-  existsSync = fs.existsSync
-  join = path.join
-}
-
-// Default demo users for production
+// Default demo users
 const DEFAULT_USERS = [
   {
     id: 'user_demo_1',
@@ -43,23 +33,18 @@ const DEFAULT_USERS = [
 
 // Helper functions for user management
 function getUsersDB() {
-  // In production, use environment variable or default users
+  // Always use default users in production/CodeSandbox
   if (isProduction) {
-    if (process.env.DEMO_USERS) {
-      try {
-        return { users: JSON.parse(process.env.DEMO_USERS) }
-      } catch (e) {
-        console.error('Failed to parse DEMO_USERS:', e)
-      }
-    }
     return { users: DEFAULT_USERS }
   }
   
-  // In development, use local file
+  // In development, try to use local file
   try {
-    const dbPath = join(process.cwd(), 'data', 'users.json')
-    if (existsSync(dbPath)) {
-      const data = readFileSync(dbPath, 'utf-8')
+    const fs = require('fs')
+    const path = require('path')
+    const dbPath = path.join(process.cwd(), 'data', 'users.json')
+    if (fs.existsSync(dbPath)) {
+      const data = fs.readFileSync(dbPath, 'utf-8')
       return JSON.parse(data)
     }
   } catch (error) {
@@ -70,19 +55,26 @@ function getUsersDB() {
 }
 
 function saveUsersDB(db: any) {
-  // Only save in development
+  // Only save in development, never in production/CodeSandbox
   if (!isProduction) {
     try {
-      const dbPath = join(process.cwd(), 'data', 'users.json')
-      writeFileSync(dbPath, JSON.stringify(db, null, 2))
+      const fs = require('fs')
+      const path = require('path')
+      const dbPath = path.join(process.cwd(), 'data', 'users.json')
+      fs.writeFileSync(dbPath, JSON.stringify(db, null, 2))
     } catch (error) {
       console.error('Failed to save users.json:', error)
     }
   }
 }
 
+// HARDCODED SECRET for CodeSandbox - in production use environment variable
+const authSecret = process.env.AUTH_SECRET || 
+                  process.env.NEXTAUTH_SECRET || 
+                  'codesandbox-demo-secret-change-in-production-2024'
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'development-secret-change-in-production',
+  secret: authSecret,
   providers: [
     Credentials({
       name: 'credentials',
@@ -144,7 +136,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     }
   },
-  trustHost: true
+  trustHost: true,
+  debug: isCodeSandbox // Enable debug in CodeSandbox
 })
 
 // Helper function to create a new user
@@ -154,7 +147,7 @@ export async function createUser(
   name: string,
   clearanceLevel: string
 ) {
-  // In production, registration is disabled for demo
+  // In production/CodeSandbox, registration is disabled for demo
   if (isProduction) {
     // For demo purposes, just return success but don't actually save
     const hashedPassword = await bcrypt.hash(password, 10)
