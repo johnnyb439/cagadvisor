@@ -50,12 +50,21 @@ async function resetRateLimit(identifier: string) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { email, password, name, clearanceLevel } = body
+    const { email, username, password, name, clearanceLevel } = body
 
     // Validate input
-    if (!email || !password || !name || !clearanceLevel) {
+    if (!email || !username || !password || !name || !clearanceLevel) {
       return NextResponse.json(
         { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
+    // Validate username format (alphanumeric, underscore, dash, 3-20 chars)
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/
+    if (!usernameRegex.test(username)) {
+      return NextResponse.json(
+        { error: 'Username must be 3-20 characters and contain only letters, numbers, underscore, or dash' },
         { status: 400 }
       )
     }
@@ -71,8 +80,8 @@ export async function POST(request: Request) {
     }
 
     try {
-      // Create user
-      const user = await createUser(email, password, name, clearanceLevel)
+      // Create user with username
+      const user = await createUser(email, username, password, name, clearanceLevel)
 
       // Reset rate limit on successful registration
       await resetRateLimit(`register:${email}`)

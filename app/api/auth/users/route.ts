@@ -12,6 +12,7 @@ export async function GET() {
   const safeUsers = db.users.map((user: any) => ({
     id: user.id,
     email: user.email,
+    username: user.username || 'N/A',
     name: user.name,
     clearanceLevel: user.clearanceLevel,
     createdAt: user.createdAt || 'N/A'

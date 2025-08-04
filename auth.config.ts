@@ -21,6 +21,7 @@ const IN_MEMORY_USERS: any[] = []
 const DEFAULT_USERS = [
   // Registered users will be stored here during the session
   // Note: These will be lost when the server restarts
+  // Format: { id, email, username, password, name, clearanceLevel }
 ]
 
 // Helper functions for user management
@@ -81,7 +82,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const db = getUsersDB()
-        const user = db.users.find((u: any) => u.email === credentials.email)
+        // Find user by email OR username
+        const user = db.users.find((u: any) => 
+          u.email === credentials.email || 
+          u.username === credentials.email // Allow username in email field
+        )
 
         if (!user) {
           return null
@@ -136,16 +141,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 // Helper function to create a new user
 export async function createUser(
   email: string,
+  username: string,
   password: string,
   name: string,
   clearanceLevel: string
 ) {
   // In production/CodeSandbox, save to in-memory storage
   if (isProduction) {
-    // Check if user already exists in memory
-    const existingUser = IN_MEMORY_USERS.find(u => u.email === email)
+    // Check if user already exists in memory (by email or username)
+    const existingUser = IN_MEMORY_USERS.find(u => 
+      u.email === email || u.username === username
+    )
     if (existingUser) {
-      throw new Error('User already exists')
+      if (existingUser.email === email) {
+        throw new Error('Email already registered')
+      }
+      if (existingUser.username === username) {
+        throw new Error('Username already taken')
+      }
     }
     
     // Hash password and create user
@@ -153,6 +166,7 @@ export async function createUser(
     const newUser = {
       id: `user_${Date.now()}`,
       email,
+      username,
       password: hashedPassword,
       name,
       clearanceLevel,
@@ -175,9 +189,17 @@ export async function createUser(
   // In development, use file system
   const db = getUsersDB()
   
-  // Check if user already exists
-  if (db.users.find((u: any) => u.email === email)) {
-    throw new Error('User already exists')
+  // Check if user already exists (by email or username)
+  const existingUser = db.users.find((u: any) => 
+    u.email === email || u.username === username
+  )
+  if (existingUser) {
+    if (existingUser.email === email) {
+      throw new Error('Email already registered')
+    }
+    if (existingUser.username === username) {
+      throw new Error('Username already taken')
+    }
   }
 
   // Hash password
@@ -187,6 +209,7 @@ export async function createUser(
   const newUser = {
     id: `user_${Date.now()}`,
     email,
+    username,
     password: hashedPassword,
     name,
     clearanceLevel,

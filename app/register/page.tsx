@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -52,6 +53,7 @@ export default function RegisterPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
+          username: formData.username,
           password: formData.password,
           name: formData.name,
           clearanceLevel: formData.clearanceLevel
@@ -129,6 +131,27 @@ export default function RegisterPage() {
                   required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
                   placeholder="John Doe"
+                />
+              </div>
+            </div>
+
+            {/* Username */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium mb-2">
+                Username
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <input
+                  type="text"
+                  id="username"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  required
+                  pattern="[a-zA-Z0-9_-]{3,20}"
+                  title="3-20 characters, letters, numbers, underscore, or dash only"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
+                  placeholder="johndoe123"
                 />
               </div>
             </div>

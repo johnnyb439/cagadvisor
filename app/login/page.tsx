@@ -49,17 +49,17 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email Address
+                Email or Username
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
                 <input
-                  type="email"
+                  type="text"
                   id="email"
                   name="email"
                   required
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="your.email@example.com"
+                  placeholder="email@example.com or username"
                   disabled={isPending}
                 />
               </div>
