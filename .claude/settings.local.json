@@ -44,7 +44,9 @@
       "Bash(explorer:*)",
       "Bash(start \"\" \"C:\\Users\\JohnnyBeast\\OneDrive\\CAG_Shared_Project\")",
       "Bash(start https://codesandbox.io/dashboard/recent)",
-      "Bash(code:*)"
+      "Bash(code:*)",
+      "WebFetch(domain:klkv37-3000.csb.app)",
+      "WebFetch(domain:dfv3s6-3000.csb.app)"
     ],
     "deny": []
   }
