@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs'
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { join } from 'path'
 
-// Check if we're in production (Vercel)
-const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL
+// Check if we're in production (Vercel/CodeSandbox)
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || process.env.CODESANDBOX_HOST
 
 // Default demo users for production
 const DEFAULT_USERS = [
