@@ -15,7 +15,11 @@ const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL
 
 // In-memory user storage for CodeSandbox (resets on server restart)
 // This allows testing registration without file system access
-const IN_MEMORY_USERS: any[] = []
+// Make it global so it can be accessed from other files
+if (!global.IN_MEMORY_USERS) {
+  global.IN_MEMORY_USERS = []
+}
+const IN_MEMORY_USERS = global.IN_MEMORY_USERS as any[]
 
 // Default demo users - starts empty, fills with registered users
 const DEFAULT_USERS = [
@@ -149,16 +153,14 @@ export async function createUser(
   // In production/CodeSandbox, save to in-memory storage
   if (isProduction) {
     // Check if user already exists in memory (by email or username)
-    const existingUser = IN_MEMORY_USERS.find(u => 
-      u.email === email || u.username === username
-    )
-    if (existingUser) {
-      if (existingUser.email === email) {
-        throw new Error('Email already registered')
-      }
-      if (existingUser.username === username) {
-        throw new Error('Username already taken')
-      }
+    const existingUserByEmail = IN_MEMORY_USERS.find(u => u.email === email)
+    const existingUserByUsername = IN_MEMORY_USERS.find(u => u.username === username)
+    
+    if (existingUserByEmail) {
+      throw new Error(`Email "${email}" is already registered. Try logging in instead.`)
+    }
+    if (existingUserByUsername) {
+      throw new Error(`Username "${username}" is already taken. Please choose a different username.`)
     }
     
     // Hash password and create user
