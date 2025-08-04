@@ -13,22 +13,10 @@ const isCodeSandbox = typeof process !== 'undefined' && (
 // Check if we're in production (Vercel/CodeSandbox)  
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL || isCodeSandbox
 
-// Default demo users
+// Default demo users - CLEARED FOR CUSTOM ACCOUNTS
 const DEFAULT_USERS = [
-  {
-    id: 'user_demo_1',
-    email: 'demo@cagadvisor.com',
-    password: '$2b$10$QRESah7q31cZZgyNWBji4e.6zUWKRtrQmTSdRHClZq4LOVwkSdt1.', // demo123
-    name: 'Demo User',
-    clearanceLevel: 'Secret'
-  },
-  {
-    id: 'user_admin_1',
-    email: 'admin@cagadvisor.com',
-    password: '$2b$10$Z.kjKiqTnebDBGtaqNRJX.AaXzMzOE8DJYKGOR4xb0BZYzYsuibOS', // admin123
-    name: 'Admin User',
-    clearanceLevel: 'Top Secret'
-  }
+  // Add your custom test accounts here
+  // Format: { id: 'unique_id', email: 'email@example.com', password: 'hashed_password', name: 'Name', clearanceLevel: 'Secret|Top Secret' }
 ]
 
 // Helper functions for user management

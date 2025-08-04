@@ -2,22 +2,9 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 
-// Simple demo users for CodeSandbox
+// Simple demo users for CodeSandbox - CLEARED FOR CUSTOM ACCOUNTS
 const DEMO_USERS = [
-  {
-    id: 'user_demo_1',
-    email: 'demo@cagadvisor.com',
-    password: '$2b$10$QRESah7q31cZZgyNWBji4e.6zUWKRtrQmTSdRHClZq4LOVwkSdt1.', // demo123
-    name: 'Demo User',
-    clearanceLevel: 'Secret'
-  },
-  {
-    id: 'user_admin_1', 
-    email: 'admin@cagadvisor.com',
-    password: '$2b$10$Z.kjKiqTnebDBGtaqNRJX.AaXzMzOE8DJYKGOR4xb0BZYzYsuibOS', // admin123
-    name: 'Admin User',
-    clearanceLevel: 'Top Secret'
-  }
+  // Add your custom test accounts here
 ]
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
