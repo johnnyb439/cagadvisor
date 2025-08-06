@@ -27,13 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white dark:bg-command-black">
         <AuthProvider>
-          {/* FORCED UPDATE - Green Banner with Today's Date */}
-          <div style={{backgroundColor: '#10b981', color: 'white', padding: '12px', textAlign: 'center', fontWeight: 'bold', fontSize: '20px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 99999}}>
-            🚀 LIVE UPDATE: Today is {today} - Branch: suspicious-murdock 🚀
+          {/* Transparent Banner with Today's Date */}
+          <div style={{backgroundColor: 'rgba(16, 185, 129, 0.3)', backdropFilter: 'blur(10px)', color: '#047857', padding: '8px', textAlign: 'center', fontWeight: 'bold', fontSize: '16px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40, borderBottom: '2px solid rgba(16, 185, 129, 0.5)'}}>
+            🚀 LIVE: {today} - suspicious-murdock 🚀
           </div>
-          <div className="pt-10">
-            <Navbar />
-          </div>
+          <Navbar />
           <main className="pt-20">
             {children}
           </main>
