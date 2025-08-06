@@ -16,11 +16,24 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const today = new Date().toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+
   return (
     <html lang="en">
       <body className="min-h-screen bg-white dark:bg-command-black">
         <AuthProvider>
-          <Navbar />
+          {/* Green Banner with Today's Date */}
+          <div className="bg-green-600 text-white py-2 px-4 text-center font-semibold fixed top-0 left-0 right-0 z-50">
+            Today is {today} - Synced via suspicious-murdock branch
+          </div>
+          <div className="pt-10">
+            <Navbar />
+          </div>
           <main className="pt-20">
             {children}
           </main>
