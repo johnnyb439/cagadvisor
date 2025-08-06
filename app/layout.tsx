@@ -27,9 +27,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white dark:bg-command-black">
         <AuthProvider>
-          {/* Green Banner with Today's Date */}
-          <div className="bg-green-600 text-white py-2 px-4 text-center font-semibold fixed top-0 left-0 right-0 z-50">
-            Today is {today} - Synced via suspicious-murdock branch
+          {/* Green Banner with Today's Date - Updated for CodeSandbox */}
+          <div className="bg-green-600 text-white py-3 px-4 text-center font-bold text-lg fixed top-0 left-0 right-0 z-[9999] shadow-lg">
+            🟢 Today is {today} - Live on suspicious-murdock branch! 🟢
           </div>
           <div className="pt-10">
             <Navbar />
