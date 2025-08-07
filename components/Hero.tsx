@@ -8,17 +8,19 @@ import { ArrowRight, Shield, Users, Briefcase, CheckCircle, Star } from 'lucide-
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      {/* Mirrored Gradient Background - Green at top and bottom, dark in middle */}
+      {/* Gradient Squares Grid Pattern Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/20 via-black to-cyan-500/20"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 via-transparent to-emerald-500/10"></div>
-      </div>
-      
-      {/* Subtle Grid Pattern */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='rgba(0,255,255,0.05)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E")`
-        }}></div>
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px),
+              repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px)
+            `
+          }}
+        />
+        {/* Additional gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent"></div>
       </div>
       
       {/* Subtle Animated Gradient Orbs - Green themed */}
@@ -129,8 +131,8 @@ export default function Hero() {
             className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
           >
             <div className="text-center">
-              <div className="text-4xl font-bold text-white mb-2">$120K+</div>
-              <div className="text-gray-300">Average Salary</div>
+              <div className="text-4xl font-bold text-white mb-2">10+</div>
+              <div className="text-gray-300">Years Experience</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-white mb-2">500+</div>
@@ -140,22 +142,6 @@ export default function Hero() {
               <div className="text-4xl font-bold text-white mb-2">30 Days</div>
               <div className="text-gray-300">Average Time to Hire</div>
             </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
-          >
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2"></div>
           </motion.div>
         </motion.div>
       </div>
