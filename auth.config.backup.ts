@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import bcrypt from 'bcryptjs'
 import fs from 'fs'
 import path from 'path'
 
@@ -28,16 +29,16 @@ declare module 'next-auth/jwt' {
   }
 }
 
-// User Data Structure
+// --- User Data Persistence using JSON file ---
+
 interface StoredUser {
   id: string
   email: string
   username: string
   name: string
-  password: string  // Plain text for local testing
+  password: string
   clearanceLevel: string
   createdAt: string
-  isAdmin?: boolean
 }
 
 const usersFilePath = path.join(process.cwd(), 'data', 'users.json')
@@ -49,36 +50,13 @@ function initializeUsersDB() {
     fs.mkdirSync(dir, { recursive: true })
   }
   if (!fs.existsSync(usersFilePath)) {
-    // Initialize with test users
-    const defaultUsers = [
-      {
-        id: 'user_admin_001',
-        email: 'tone.dubai@icloud.com',
-        username: 'admin',
-        password: 'Admin@2025!',  // Plain text password
-        name: 'Admin User',
-        clearanceLevel: 'Top Secret',
-        isAdmin: true,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'user_test_001',
-        email: 'test@test.com',
-        username: 'testuser',
-        password: 'test123',  // Plain text password
-        name: 'Test User',
-        clearanceLevel: 'Secret',
-        createdAt: new Date().toISOString()
-      }
-    ]
-    fs.writeFileSync(usersFilePath, JSON.stringify(defaultUsers, null, 2), 'utf-8')
-    console.log('✅ Initialized users.json with default users')
+    fs.writeFileSync(usersFilePath, '[]', 'utf-8')
   }
 }
 
 initializeUsersDB()
 
-// Get users from JSON file (handles both array and object formats)
+// Get users from JSON file
 export function getUsersDB(): StoredUser[] {
   try {
     const data = fs.readFileSync(usersFilePath, 'utf-8')
@@ -86,7 +64,7 @@ export function getUsersDB(): StoredUser[] {
     // Handle both { users: [] } and [] formats
     return Array.isArray(parsed) ? parsed : (parsed.users || [])
   } catch (error) {
-    console.error('Error reading users.json:', error)
+    console.error('Error reading from users.json:', error)
     return []
   }
 }
@@ -94,11 +72,18 @@ export function getUsersDB(): StoredUser[] {
 // Save users to JSON file
 function saveUsersDB(users: StoredUser[]): void {
   try {
+    // Save as plain array to match current file format
     fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf-8')
-    console.log(`✅ Saved ${users.length} users to users.json`)
   } catch (error) {
     console.error('Error writing to users.json:', error)
   }
+}
+
+// Add a new user
+export function addUser(user: StoredUser): void {
+  const users = getUsersDB()
+  users.push(user)
+  saveUsersDB(users)
 }
 
 // Find user by email or username
@@ -112,7 +97,25 @@ export function findUser(identifier: string): StoredUser | undefined {
   )
 }
 
-// Create a new user (plain text password for local testing)
+// Check if email exists
+export function emailExists(email: string): boolean {
+  const users = getUsersDB()
+  return users.some(u => u.email.toLowerCase() === email.toLowerCase())
+}
+
+// Check if username exists
+export function usernameExists(username: string): boolean {
+  const users = getUsersDB()
+  return users.some(u => u.username.toLowerCase() === username.toLowerCase())
+}
+
+// Clear all users
+export function clearAllUsers(): void {
+  saveUsersDB([])
+}
+
+
+// Create a new user
 export async function createUser(
   email: string,
   username: string,
@@ -120,39 +123,51 @@ export async function createUser(
   name: string,
   clearanceLevel: string
 ): Promise<StoredUser> {
-  const users = getUsersDB()
-  
+  // Validate inputs
+  if (!email || !username || !password || !name) {
+    throw new Error('All fields are required')
+  }
+
   // Check if email already exists
-  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-    throw new Error(`Email "${email}" is already registered`)
+  if (emailExists(email)) {
+    throw new Error(`Email "'${email}'" is already registered`)
   }
 
   // Check if username already exists
-  if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-    throw new Error(`Username "${username}" is already taken`)
+  if (usernameExists(username)) {
+    throw new Error(`Username "'${username}'" is already taken`)
   }
 
-  // Create new user with plain text password
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  // Create new user
   const newUser: StoredUser = {
     id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
     email: email.toLowerCase(),
     username: username.toLowerCase(),
-    password: password,  // Store plain text for local testing
+    password: hashedPassword,
     name,
     clearanceLevel,
     createdAt: new Date().toISOString()
   }
 
-  users.push(newUser)
-  saveUsersDB(users)
+  // Add to storage
+  addUser(newUser)
 
-  console.log(`✅ User registered: ${email} (username: ${username})`)
+  console.log(`✅ User registered: '${email}' (username: '${username}')`)
+  console.log(`Total users: '${getUsersDB().length}'`)
+
   return newUser
 }
 
-// Simple local auth configuration - NO external dependencies
+// Auth configuration
+const authSecret = process.env.AUTH_SECRET ||
+                  process.env.NEXTAUTH_SECRET ||
+                  'development-secret-key-change-in-production-2024'
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: 'local-dev-secret-key-2025',  // Fixed secret for local development
+  secret: authSecret,
   providers: [
     Credentials({
       name: 'credentials',
@@ -161,37 +176,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        console.log('🔐 Login attempt:', credentials?.email)
-        
         if (!credentials?.email || !credentials?.password) {
-          console.log('❌ Missing credentials')
-          return null
+          throw new Error('Please enter your email/username and password')
         }
 
-        // Get all users from local JSON
-        const users = getUsersDB()
-        console.log(`📊 Found ${users.length} users in database`)
-
-        // Find user by email or username (case-insensitive)
-        const user = users.find(u => 
-          u.email.toLowerCase() === credentials.email.toLowerCase() ||
-          u.username.toLowerCase() === credentials.email.toLowerCase()
-        )
+        // Find user by email or username
+        const user = findUser(credentials.email as string)
 
         if (!user) {
-          console.log('❌ User not found:', credentials.email)
-          return null
+          throw new Error('No account found with this email or username')
         }
 
-        console.log('✅ User found:', user.email)
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password
+        )
 
-        // Simple password comparison (plain text for local testing)
-        if (user.password !== credentials.password) {
-          console.log('❌ Invalid password')
-          return null
+        if (!isPasswordValid) {
+          throw new Error('Invalid password')
         }
-
-        console.log('✅ Password correct - Login successful!')
 
         // Return user object for session
         return {
@@ -206,7 +210,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60  // 30 days
+    maxAge: 30 * 24 * 60 * 60 // 30 days
   },
   pages: {
     signIn: '/login',
@@ -231,16 +235,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }
   },
   trustHost: true,
-  debug: true  // Enable debug for troubleshooting
+  debug: false
 })
-
-// Export helper functions
-export function clearAllUsers(): void {
-  saveUsersDB([])
-}
-
-export function addUser(user: StoredUser): void {
-  const users = getUsersDB()
-  users.push(user)
-  saveUsersDB(users)
-}

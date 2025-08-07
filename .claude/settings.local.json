@@ -46,7 +46,8 @@
       "Bash(start https://codesandbox.io/dashboard/recent)",
       "Bash(code:*)",
       "WebFetch(domain:klkv37-3000.csb.app)",
-      "WebFetch(domain:dfv3s6-3000.csb.app)"
+      "WebFetch(domain:dfv3s6-3000.csb.app)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }

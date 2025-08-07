@@ -2,7 +2,6 @@
 
 import { signIn } from '@/auth.config'
 import { AuthError } from 'next-auth'
-import { redirect } from 'next/navigation'
 
 export async function loginAction(
   prevState: any,
@@ -40,6 +39,6 @@ export async function loginAction(
     return { error: 'An error occurred. Please try again.' }
   }
 
-  // Redirect to dashboard on success
-  redirect('/dashboard')
+  // Return success indicator for client-side redirect
+  return { success: true }
 }
