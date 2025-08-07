@@ -1,169 +1,142 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User, Lock, Shield, AlertCircle, Check } from 'lucide-react'
+import { Mail, Lock, User, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { loginAction } from './actions'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  })
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  
-  useEffect(() => {
-    // Check if user just registered
-    if (searchParams.get('registered') === 'true') {
-      setSuccess('✅ Account created successfully! Please login with your credentials.')
-      // Pre-fill email if provided
-      const email = searchParams.get('email')
-      if (email) {
-        const emailInput = document.getElementById('email') as HTMLInputElement
-        if (emailInput) {
-          emailInput.value = email
-        }
-      }
-    }
-  }, [searchParams])
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setLoading(true)
 
-    const formData = new FormData(e.currentTarget)
-    
-    // Use NextAuth signIn
-    startTransition(async () => {
-      const result = await loginAction(null, formData)
-      if (result?.error) {
-        setError(result.error)
-      }
-      if (result?.success) {
-        console.log('Login successful, redirecting to dashboard...')
+    try {
+      // Simple login - just check against users.json
+      const response = await fetch('/api/simple-auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Store user in localStorage for simple session management
+        localStorage.setItem('currentUser', JSON.stringify(data.user))
+        
+        // Redirect to dashboard
         router.push('/dashboard')
+      } else {
+        setError(data.error || 'Invalid username or password')
       }
-    })
+    } catch (err) {
+      setError('An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-ops-charcoal py-20 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-command-black to-ops-charcoal py-20 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-md w-full mx-4"
+        className="max-w-md mx-auto"
       >
-        <div className="bg-white dark:bg-command-black rounded-lg shadow-lg p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-dynamic-green to-dynamic-blue rounded-full mb-4">
-              <Shield size={32} className="text-white" />
-            </div>
-            <h1 className="text-2xl font-montserrat font-bold mb-2">Welcome Back</h1>
-            <p className="text-gray-600 dark:text-gray-400">Log in to your Cleared Advisory account</p>
-          </div>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-gray-400">Sign in to access your dashboard</p>
+        </div>
 
-          {/* Form */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center">
+              <AlertCircle size={20} className="text-red-500 mr-2" />
+              <span className="text-red-700 dark:text-red-400 text-sm">{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Email or Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail size={20} className="text-gray-400" />
+                </div>
                 <input
-                  type="text"
                   id="email"
-                  name="email"
+                  type="text"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="Enter email or username"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="email@example.com or username"
-                  disabled={isPending}
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock size={20} className="text-gray-400" />
+                </div>
                 <input
-                  type="password"
                   id="password"
-                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="Enter password"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="Enter your password"
-                  disabled={isPending}
                 />
               </div>
             </div>
 
-            {/* Success Message */}
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-2"
-              >
-                <Check size={20} className="text-green-600 dark:text-green-400 mt-0.5" />
-                <p className="text-sm text-green-600 dark:text-green-400 font-medium">{success}</p>
-              </motion.div>
-            )}
-
-            {/* Error Message */}
-            {error && !success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2"
-              >
-                <AlertCircle size={20} className="text-red-600 dark:text-red-400 mt-0.5" />
-                <div className="flex-1">
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-                  {error.includes('Too many login attempts') && (
-                    <p className="text-xs text-red-500 dark:text-red-300 mt-1">
-                      You have been temporarily blocked due to multiple failed login attempts. 
-                      Please wait before trying again.
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            )}
-
             <button
               type="submit"
-              disabled={isPending}
-              className="w-full bg-gradient-to-r from-dynamic-green to-dynamic-blue text-white py-3 rounded-lg hover:from-emerald-green hover:to-cyber-cyan transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+              className="w-full bg-dynamic-green hover:bg-emerald-green text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isPending ? 'Signing in...' : 'Sign In'}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Security Notice */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-ops-charcoal rounded-lg">
-            <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-              <strong>Security Notice:</strong> We never store sensitive clearance information. 
-              Your privacy is our priority.
-            </p>
-          </div>
-
-          {/* Sign Up Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link href="/register" className="text-dynamic-green hover:text-emerald-green font-semibold">
-                Sign up here
+              <Link href="/register" className="text-dynamic-green hover:text-emerald-green font-medium">
+                Create Account
               </Link>
             </p>
           </div>
+
+          {/* Test Account Info */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Test Accounts:</p>
+            <div className="space-y-1 text-xs text-gray-600 dark:text-gray-300">
+              <div>• test / test123</div>
+              <div>• admin / admin123</div>
+              <div>• demo / demo123</div>
+            </div>
+          </div>
         </div>
       </motion.div>
-    </section>
+    </div>
   )
 }

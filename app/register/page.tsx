@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { User, Mail, Lock, Shield, AlertCircle, Check } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -47,8 +46,8 @@ export default function RegisterPage() {
     setLoading(true)
 
     try {
-      // Register user with our API
-      const response = await fetch('/api/auth/register', {
+      // Register user with our simple API
+      const response = await fetch('/api/simple-auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -63,7 +62,6 @@ export default function RegisterPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        // Show the specific error message from the API
         setError(data.error || 'Registration failed')
         setLoading(false)
         return
@@ -71,256 +69,224 @@ export default function RegisterPage() {
 
       // Registration successful!
       setSuccess('🎉 Your account has been created successfully!')
-      setError('')
       
-      // Wait a moment to show success message
-      setTimeout(async () => {
-        setSuccess('✅ Account created! Signing you in...')
-        
-        // Try to sign in automatically
-        const signInResult = await signIn('credentials', {
-          email: formData.email,
-          password: formData.password,
-          redirect: false
-        })
-
-        if (signInResult?.ok) {
-          // Successfully signed in, redirect to dashboard
+      // Store user in localStorage and redirect
+      setTimeout(() => {
+        if (data.user) {
+          localStorage.setItem('currentUser', JSON.stringify(data.user))
           router.push('/dashboard')
         } else {
-          // Sign in failed, redirect to login page with success message
-          setSuccess('✅ Account created successfully! Please login with your credentials.')
-          setTimeout(() => {
-            router.push(`/login?registered=true&email=${encodeURIComponent(formData.email)}`)
-          }, 2000)
+          router.push('/login')
         }
       }, 1500)
 
-    } catch (err: any) {
+    } catch (err) {
       console.error('Registration error:', err)
-      setError('An error occurred. Please try again.')
+      setError('An error occurred during registration. Please try again.')
+    } finally {
       setLoading(false)
     }
   }
 
+  const clearanceLevels = [
+    'None',
+    'Public Trust',
+    'Secret',
+    'Top Secret',
+    'TS/SCI'
+  ]
+
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-ops-charcoal py-20 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-command-black to-ops-charcoal py-20 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-md w-full mx-4"
+        className="max-w-md mx-auto"
       >
-        <div className="bg-white dark:bg-command-black rounded-lg shadow-lg p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-dynamic-green to-dynamic-blue rounded-full mb-4">
-              <Shield size={32} className="text-white" />
-            </div>
-            <h1 className="text-2xl font-montserrat font-bold mb-2">Create Your Account</h1>
-            <p className="text-gray-600 dark:text-gray-400">Join the Cleared Advisory community</p>
-          </div>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Create Your Account</h1>
+          <p className="text-gray-400">Join the Cleared Advisory Group community</p>
+        </div>
 
-          {/* Form */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center">
+              <AlertCircle size={20} className="text-red-500 mr-2" />
+              <span className="text-red-700 dark:text-red-400 text-sm">{error}</span>
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center">
+              <Check size={20} className="text-green-500 mr-2" />
+              <span className="text-green-700 dark:text-green-400 text-sm">{success}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User size={20} className="text-gray-400" />
+                </div>
                 <input
-                  type="text"
                   id="name"
+                  type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
                   placeholder="John Doe"
+                  required
                 />
               </div>
             </div>
 
-            {/* Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User size={20} className="text-gray-400" />
+                </div>
                 <input
-                  type="text"
                   id="username"
+                  type="text"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="johndoe"
                   required
-                  pattern="[a-zA-Z0-9_-]{3,20}"
-                  title="3-20 characters, letters, numbers, underscore, or dash only"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="johndoe123"
                 />
               </div>
             </div>
 
-            {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail size={20} className="text-gray-400" />
+                </div>
                 <input
-                  type="email"
                   id="email"
+                  type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="john@example.com"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="your.email@example.com"
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Password
+              <label htmlFor="clearanceLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Clearance Level (Optional)
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
-                <input
-                  type="password"
-                  id="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                  minLength={8}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="Minimum 8 characters"
-                />
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200"
-                  placeholder="Confirm your password"
-                />
-              </div>
-            </div>
-
-            {/* Clearance Level */}
-            <div>
-              <label htmlFor="clearanceLevel" className="block text-sm font-medium mb-2">
-                Clearance Level
-              </label>
-              <div className="relative">
-                <Shield className="absolute left-3 top-3 text-gray-400 dark:text-gray-500" size={20} />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Shield size={20} className="text-gray-400" />
+                </div>
                 <select
                   id="clearanceLevel"
                   value={formData.clearanceLevel}
                   onChange={(e) => setFormData({ ...formData, clearanceLevel: e.target.value })}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-dynamic-green dark:focus:border-dynamic-green transition-all duration-200 appearance-none"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
                 >
-                  <option value="">Select your clearance level</option>
-                  <option value="None">No Clearance</option>
-                  <option value="Public Trust">Public Trust</option>
-                  <option value="Secret">Secret</option>
-                  <option value="Top Secret">Top Secret</option>
-                  <option value="TS/SCI">TS/SCI</option>
+                  <option value="">Select clearance level</option>
+                  {clearanceLevels.map(level => (
+                    <option key={level} value={level}>{level}</option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            {/* Terms & Conditions */}
-            <div className="flex items-start">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={formData.agreeToTerms}
-                onChange={(e) => setFormData({ ...formData, agreeToTerms: e.target.checked })}
-                className="mt-1 w-4 h-4 text-dynamic-green focus:ring-dynamic-green border-gray-300 rounded"
-              />
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                I agree to the{' '}
-                <Link href="/terms" className="text-dynamic-green hover:text-emerald-green">
-                  Terms & Conditions
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-dynamic-green hover:text-emerald-green">
-                  Privacy Policy
-                </Link>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Password
               </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock size={20} className="text-gray-400" />
+                </div>
+                <input
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="Minimum 8 characters"
+                  required
+                />
+              </div>
             </div>
 
-            {/* Success Message */}
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-start gap-3"
-              >
-                <Check size={20} className="text-green-600 dark:text-green-400 mt-0.5" />
-                <p className="text-sm text-green-600 dark:text-green-400 font-medium">{success}</p>
-              </motion.div>
-            )}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock size={20} className="text-gray-400" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-dynamic-green focus:border-transparent"
+                  placeholder="Re-enter password"
+                  required
+                />
+              </div>
+            </div>
 
-            {/* Error Message */}
-            {error && !success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-2"
-              >
-                <AlertCircle size={20} className="text-red-600 dark:text-red-400 mt-0.5" />
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-              </motion.div>
-            )}
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="agreeToTerms"
+                  type="checkbox"
+                  checked={formData.agreeToTerms}
+                  onChange={(e) => setFormData({ ...formData, agreeToTerms: e.target.checked })}
+                  className="w-4 h-4 text-dynamic-green border-gray-300 rounded focus:ring-dynamic-green"
+                  required
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="agreeToTerms" className="text-gray-600 dark:text-gray-400">
+                  I agree to the{' '}
+                  <Link href="/terms" className="text-dynamic-green hover:text-emerald-green">
+                    Terms and Conditions
+                  </Link>
+                </label>
+              </div>
+            </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-dynamic-green to-dynamic-blue text-white py-3 rounded-lg hover:from-emerald-green hover:to-cyber-cyan transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-dynamic-green hover:bg-emerald-green text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
 
-          {/* Password Requirements */}
-          <div className="mt-4 p-3 bg-gray-50 dark:bg-ops-charcoal rounded-lg">
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Password must have:</p>
-            <ul className="space-y-1">
-              <li className="flex items-center text-xs text-gray-600 dark:text-gray-400">
-                <Check size={14} className={formData.password.length >= 8 ? 'text-green-500 mr-2' : 'text-gray-400 mr-2'} />
-                At least 8 characters
-              </li>
-            </ul>
-          </div>
-
-          {/* Sign In Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link href="/login" className="text-dynamic-green hover:text-emerald-green font-semibold">
-                Sign in here
+              <Link href="/login" className="text-dynamic-green hover:text-emerald-green font-medium">
+                Sign In
               </Link>
             </p>
           </div>
         </div>
       </motion.div>
-    </section>
+    </div>
   )
 }
