@@ -32,7 +32,7 @@ const steps = [
 
 export default function OurProcess() {
   return (
-    <section className="py-20 bg-white dark:bg-ops-charcoal transition-colors duration-300">
+    <section className="py-20 bg-white dark:bg-black transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,7 +51,7 @@ export default function OurProcess() {
 
         <div className="relative">
           {/* Connection Line */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-dynamic-green via-sky-blue to-emerald-green transform -translate-y-1/2"></div>
+          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500/30 via-cyan-400/40 to-cyan-500/30 transform -translate-y-1/2"></div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
             {steps.map((step, index) => (
@@ -64,7 +64,7 @@ export default function OurProcess() {
                 className="bg-white dark:bg-command-black dark:border dark:border-gray-700 rounded-xl p-6"
               >
                 <div className="text-center">
-                  <div className="w-24 h-24 bg-hero-gradient rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <div className="w-24 h-24 bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/20">
                     <step.icon className="w-12 h-12 text-white" />
                   </div>
                   <span className="text-5xl font-montserrat font-bold text-gray-100">{step.number}</span>
