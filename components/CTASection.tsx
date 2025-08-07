@@ -6,14 +6,61 @@ import { ArrowRight, Calendar, MessageCircle } from 'lucide-react'
 
 export default function CTASection() {
   return (
-    <section className="py-20 bg-hero-gradient">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-black relative overflow-hidden">
+      {/* Radar/Scanner Animation */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Multiple scanning lines for depth */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div 
+            className="absolute w-full h-0.5"
+            style={{
+              background: 'linear-gradient(to right, transparent, rgba(0, 255, 255, 0.8), transparent)',
+              animation: 'scan 6s linear infinite',
+              boxShadow: '0 0 25px 8px rgba(0, 255, 255, 0.4)',
+              maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 100%)'
+            }}
+          />
+          <div 
+            className="absolute w-full h-0.5"
+            style={{
+              background: 'linear-gradient(to right, transparent, rgba(0, 255, 255, 0.5), transparent)',
+              animation: 'scan 6s linear infinite 2s',
+              boxShadow: '0 0 15px 5px rgba(0, 255, 255, 0.3)',
+              maskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)'
+            }}
+          />
+          <div 
+            className="absolute w-full h-px"
+            style={{
+              background: 'linear-gradient(to right, transparent, rgba(0, 255, 255, 0.3), transparent)',
+              animation: 'scan 6s linear infinite 4s',
+              boxShadow: '0 0 10px 3px rgba(0, 255, 255, 0.2)',
+              maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)'
+            }}
+          />
+        </div>
+        {/* Grid overlay for radar effect */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px),
+              repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px)
+            `
+          }}
+        />
+      </div>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="glass-hero p-8 md:p-12 text-center"
+          className="glass-dark p-8 md:p-12 text-center backdrop-blur-md border-cyan-500/20"
         >
           <h2 className="text-4xl md:text-5xl font-montserrat font-bold text-white mb-4">
             Ready to Transform Your Career?

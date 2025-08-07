@@ -3,156 +3,146 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Shield, Users, Briefcase } from 'lucide-react'
+import { ArrowRight, Shield, Users, Briefcase, CheckCircle, Star } from 'lucide-react'
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-professional-gradient"></div>
-      
-      {/* Binary Pattern Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.06]">
-          <div className="text-dynamic-green font-mono text-lg leading-relaxed">
-            {Array(30).fill(null).map((_, i) => (
-              <div key={i} className="whitespace-nowrap">
-                {Array(15).fill('01101000 01100101 01101100 01110000 00100000 ').join('')}
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Scattered larger binary numbers */}
-        <div className="absolute top-10 left-20 text-cyber-cyan opacity-20 font-mono text-4xl transform rotate-12">
-          01010011
-        </div>
-        <div className="absolute top-40 right-32 text-dynamic-green opacity-20 font-mono text-3xl transform -rotate-6">
-          11001010
-        </div>
-        <div className="absolute bottom-20 left-40 text-sky-blue opacity-20 font-mono text-5xl transform rotate-45">
-          10110
-        </div>
-        <div className="absolute bottom-40 right-20 text-emerald-green opacity-20 font-mono text-3xl transform -rotate-12">
-          01101110
-        </div>
-        <div className="absolute top-1/3 left-1/4 text-cyber-cyan opacity-20 font-mono text-2xl transform rotate-30">
-          11100101
-        </div>
-        <div className="absolute top-2/3 right-1/3 text-dynamic-green opacity-20 font-mono text-4xl transform -rotate-20">
-          00110111
-        </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      {/* Gradient Squares Grid Pattern Background */}
+      <div className="absolute inset-0">
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px),
+              repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 255, 255, 0.1) 2px, rgba(0, 255, 255, 0.1) 4px)
+            `
+          }}
+        />
+        {/* Additional gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent"></div>
       </div>
       
-      {/* Animated Background Elements */}
+      {/* Subtle Animated Gradient Orbs - Green themed */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-dynamic-green/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-dynamic-blue/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-blue/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <motion.div 
+          animate={{ 
+            x: [0, 100, 0],
+            y: [0, -100, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-20 left-10 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"
+        />
+        <motion.div 
+          animate={{ 
+            x: [0, -100, 0],
+            y: [0, 100, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl"
+        />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
+          className="text-center"
         >
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              {/* Multiple blending layers for better integration */}
-              <div className="absolute inset-0 bg-gradient-radial from-white/10 via-transparent to-transparent blur-3xl scale-150"></div>
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent blur-2xl"></div>
-              <Image 
-                src="/images/cag-logo.png" 
-                alt="Cleared Advisory Group Logo" 
-                width={450} 
-                height={350}
-                className="relative object-contain opacity-90 mix-blend-screen"
-                style={{
-                  filter: 'drop-shadow(0 0 60px rgba(255, 255, 255, 0.2)) drop-shadow(0 0 120px rgba(135, 206, 235, 0.1)) brightness(1.1) contrast(0.9)',
-                  transform: 'scaleX(1.2)'
-                }}
-              />
+          {/* Logo moved up closer to top */}
+          <div className="mb-6">
+            <Image 
+              src="/images/cag-logo.png" 
+              alt="Cleared Advisory Group" 
+              width={350} 
+              height={250}
+              className="mx-auto object-contain"
+              priority
+            />
+          </div>
+
+          {/* Trust Badges */}
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-4 mb-6"
+          >
+            <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <Shield className="w-5 h-5 text-green-400 mr-2" />
+              <span className="text-sm text-white">Trusted by 500+ Cleared Professionals</span>
             </div>
-          </div>
-
-          {/* Banner */}
-          <div className="flex justify-center mb-8">
-            <div className="relative glass glass-enhanced glass-frosted-blue rounded-full px-8 py-3 overflow-hidden">
-              {/* Binary background decoration */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="text-xs font-mono leading-none whitespace-nowrap">
-                  {Array(10).fill('01011010 11001100 10101010 01110110 ').join('')}
-                </div>
-              </div>
-              <span className="relative text-white font-semibold text-lg">Proudly Serving America's Cleared Professionals</span>
+            <div className="flex items-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <Star className="w-5 h-5 text-yellow-400 mr-2" />
+              <span className="text-sm text-white">95% Success Rate</span>
             </div>
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-montserrat font-bold text-white mb-6 text-shadow-lg">
-            Your Gateway to
-            <span className="block gradient-text-animated mt-2">Cleared IT Opportunities</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            Bridging the gap for National Guard, Reservists, Veterans, and cleared professionals 
-            seeking lucrative government contracting careers.
-          </p>
-          
+          </motion.div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/jobs" className="glass-button ripple text-white inline-flex items-center group hover-glow">
-                Browse Cleared Jobs
-                <ArrowRight className="ml-2 transition-transform group-hover:translate-x-2" size={20} />
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/mock-interview" className="glass-button ripple text-white inline-flex items-center hover-glow">
-                Try AI Mock Interview
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/contact" className="glass-button ripple text-white inline-flex items-center hover-glow">
-                Schedule Consultation
-              </Link>
-            </motion.div>
-          </div>
+          {/* Main Headline with reduced spacing */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 leading-tight"
+          >
+            Your Security Clearance is Your
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mt-2">
+              Gateway to Success
+            </span>
+          </motion.h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="glass-card"
-            >
-              <Shield className="w-12 h-12 text-dynamic-green mx-auto mb-4" />
-              <h3 className="text-white font-semibold mb-2">SECRET+ Required</h3>
-              <p className="text-gray-400 text-sm">We specialize in opportunities for cleared professionals</p>
-            </motion.div>
+          {/* Subheadline with reduced spacing */}
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed"
+          >
+            We help cleared professionals transition into lucrative IT contracting careers 
+            with personalized guidance and proven strategies.
+          </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="glass-card"
-            >
-              <Users className="w-12 h-12 text-dynamic-blue mx-auto mb-4" />
-              <h3 className="text-white font-semibold mb-2">Military-Friendly</h3>
-              <p className="text-gray-400 text-sm">Understanding your unique service commitments</p>
-            </motion.div>
+          {/* CTA Buttons with reduced spacing */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+          >
+            <Link href="/register" className="group">
+              <button className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center justify-center">
+                Start Your Journey
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+            <Link href="/mock-interview">
+              <button className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-200">
+                Try Mock Interview
+              </button>
+            </Link>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="glass-card"
-            >
-              <Briefcase className="w-12 h-12 text-emerald-green mx-auto mb-4" />
-              <h3 className="text-white font-semibold mb-2">IT Focus</h3>
-              <p className="text-gray-400 text-sm">From help desk to systems administration</p>
-            </motion.div>
-          </div>
+          {/* Stats Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+          >
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">10+</div>
+              <div className="text-gray-300">Years Experience</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">500+</div>
+              <div className="text-gray-300">Professionals Placed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">30 Days</div>
+              <div className="text-gray-300">Average Time to Hire</div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>
