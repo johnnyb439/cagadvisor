@@ -47,7 +47,11 @@
       "Bash(code:*)",
       "WebFetch(domain:klkv37-3000.csb.app)",
       "WebFetch(domain:dfv3s6-3000.csb.app)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(grep:*)",
+      "Bash(awk:*)",
+      "Bash(pkill:*)",
+      "Bash(true)"
     ],
     "deny": []
   }

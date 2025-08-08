@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bot, Mic, MicOff, Send, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react'
+import { Bot, Mic, MicOff, Send, RefreshCw, CheckCircle, AlertCircle, Volume2, VolumeX, X } from 'lucide-react'
 import BinaryBackground from '@/components/BinaryBackground'
 import { interviewQuestions, InterviewQuestion } from './interview-data'
 
@@ -23,17 +23,31 @@ const interviewRoles = {
   ]
 }
 
-// For now, we'll only show helpdesk questions since those are the only ones with answers
-const availableRoles = ['helpdesk']
+// Available roles with implemented questions
+const availableRoles = ['helpdesk', 'isp', 'osp', 'fiber', 'network', 'systems']
 
-// Fisher-Yates shuffle algorithm
-const shuffleArray = <T,>(array: T[]): T[] => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+// Progressive difficulty ordering with slight randomization within difficulty groups
+const orderByDifficulty = <T,>(array: T[]): T[] => {
+  if (array.length === 0) return [];
+  
+  // For a 15-question array, divide into difficulty groups
+  // Easy (0-4), Medium (5-9), Hard (10-14)
+  const easy = array.slice(0, 5);
+  const medium = array.slice(5, 10);
+  const hard = array.slice(10);
+  
+  // Shuffle within each difficulty group for variety
+  const shuffleGroup = (group: T[]) => {
+    const shuffled = [...group];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+  
+  // Return concatenated groups: easy first, then medium, then hard
+  return [...shuffleGroup(easy), ...shuffleGroup(medium), ...shuffleGroup(hard)];
 }
 
 export default function MockInterviewPage() {
@@ -48,24 +62,26 @@ export default function MockInterviewPage() {
   const [questionCount, setQuestionCount] = useState(0)
   const [shuffledQuestions, setShuffledQuestions] = useState<InterviewQuestion[]>([])
   const [questionIndex, setQuestionIndex] = useState(0)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [showProTip, setShowProTip] = useState(true)
 
   const startInterview = () => {
     if (selectedRole) {
       setIsInterviewing(true)
-      // Shuffle questions when starting interview
-      if (selectedRole === 'helpdesk') {
-        const questions = interviewQuestions.helpdesk || [];
-        const shuffled = shuffleArray(questions);
-        setShuffledQuestions(shuffled);
+      // Order questions by progressive difficulty
+      if (selectedRole === 'helpdesk' || selectedRole === 'isp' || selectedRole === 'osp' || selectedRole === 'fiber' || selectedRole === 'network' || selectedRole === 'systems') {
+        const questions = interviewQuestions[selectedRole] || [];
+        const ordered = orderByDifficulty(questions);
+        setShuffledQuestions(ordered);
         setQuestionIndex(0);
         setQuestionCount(1);
-        setCurrentQuestion(shuffled[0]);
+        setCurrentQuestion(ordered[0]);
       }
     }
   }
 
   const generateQuestion = () => {
-    if (selectedRole === 'helpdesk' && shuffledQuestions.length > 0) {
+    if ((selectedRole === 'helpdesk' || selectedRole === 'isp' || selectedRole === 'osp' || selectedRole === 'fiber' || selectedRole === 'network' || selectedRole === 'systems') && shuffledQuestions.length > 0) {
       // Get next question from shuffled array
       const nextIndex = questionIndex + 1;
       if (nextIndex < shuffledQuestions.length) {
@@ -87,6 +103,7 @@ export default function MockInterviewPage() {
   }
 
   const nextQuestion = () => {
+    stopSpeaking() // Stop any ongoing speech
     if (questionCount < 16) {
       generateQuestion()
     } else {
@@ -106,18 +123,106 @@ export default function MockInterviewPage() {
     setQuestionCount(0)
     setShuffledQuestions([])
     setQuestionIndex(0)
+    stopSpeaking()
   }
+
+  const speakText = (text: string) => {
+    // Check if browser supports speech synthesis
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel()
+      
+      const utterance = new SpeechSynthesisUtterance(text)
+      
+      // Configure speech settings for more natural sound
+      utterance.rate = 0.9 // Slightly slower for more natural pace (0.1 to 10)
+      utterance.pitch = 1.1 // Slightly higher pitch for warmth (0 to 2)
+      utterance.volume = 0.9 // Slightly lower volume (0 to 1)
+      
+      // Try to select a more natural voice
+      const voices = window.speechSynthesis.getVoices()
+      
+      // Priority list of more natural-sounding voices
+      const preferredVoices = [
+        'Microsoft Zira', // Windows natural voice
+        'Microsoft David', // Windows natural voice
+        'Samantha', // macOS natural voice
+        'Alex', // macOS natural voice
+        'Google US English', // Chrome natural voice
+        'Google UK English Female', // Chrome natural voice
+        'Google UK English Male' // Chrome natural voice
+      ]
+      
+      // Find the best available voice
+      let selectedVoice = voices.find(voice => 
+        preferredVoices.some(preferred => 
+          voice.name.includes(preferred)
+        )
+      )
+      
+      // If no preferred voice found, try to get any English voice that's not too robotic
+      if (!selectedVoice) {
+        selectedVoice = voices.find(voice => 
+          voice.lang.startsWith('en') && 
+          !voice.name.includes('compact') && // Avoid compact voices (more robotic)
+          !voice.name.includes('eSpeak') // Avoid eSpeak (very robotic)
+        )
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice
+      }
+      
+      // Set speaking state
+      utterance.onstart = () => setIsSpeaking(true)
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+      
+      // Start speaking
+      window.speechSynthesis.speak(utterance)
+    } else {
+      alert('Text-to-speech is not supported in your browser')
+    }
+  }
+
+  const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+    }
+  }
+
+  const toggleSpeak = (text: string) => {
+    if (isSpeaking) {
+      stopSpeaking()
+    } else {
+      speakText(text)
+    }
+  }
+
+  // Load voices on component mount
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      // Load voices - some browsers need this
+      window.speechSynthesis.getVoices();
+      
+      // Chrome needs an event listener
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }, []);
 
   // Ensure question loads when interview starts
   useEffect(() => {
-    if (isInterviewing && selectedRole === 'helpdesk' && !currentQuestion && shuffledQuestions.length === 0) {
+    if (isInterviewing && (selectedRole === 'helpdesk' || selectedRole === 'isp' || selectedRole === 'osp' || selectedRole === 'fiber' || selectedRole === 'network' || selectedRole === 'systems') && !currentQuestion && shuffledQuestions.length === 0) {
       // This will be handled by startInterview now
-      const questions = interviewQuestions.helpdesk || [];
-      const shuffled = shuffleArray(questions);
-      setShuffledQuestions(shuffled);
+      const questions = interviewQuestions[selectedRole] || [];
+      const ordered = orderByDifficulty(questions);
+      setShuffledQuestions(ordered);
       setQuestionIndex(0);
       setQuestionCount(1);
-      setCurrentQuestion(shuffled[0]);
+      setCurrentQuestion(ordered[0]);
     }
   }, [isInterviewing, selectedRole, currentQuestion, shuffledQuestions]);
 
@@ -204,14 +309,14 @@ export default function MockInterviewPage() {
                         // Automatically start interview after role selection
                         setTimeout(() => {
                           setIsInterviewing(true);
-                          // Shuffle questions when starting interview
-                          if (role.id === 'helpdesk') {
-                            const questions = interviewQuestions.helpdesk || [];
-                            const shuffled = shuffleArray(questions);
-                            setShuffledQuestions(shuffled);
+                          // Order questions by progressive difficulty
+                          if (role.id === 'helpdesk' || role.id === 'isp' || role.id === 'osp' || role.id === 'fiber' || role.id === 'network' || role.id === 'systems') {
+                            const questions = interviewQuestions[role.id] || [];
+                            const ordered = orderByDifficulty(questions);
+                            setShuffledQuestions(ordered);
                             setQuestionIndex(0);
                             setQuestionCount(1);
-                            setCurrentQuestion(shuffled[0]);
+                            setCurrentQuestion(ordered[0]);
                           }
                         }, 500);
                       }
@@ -273,17 +378,7 @@ export default function MockInterviewPage() {
                   rows={6}
                 />
                 
-                <div className="flex justify-between items-center">
-                  <button
-                    onClick={() => setIsRecording(!isRecording)}
-                    className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                      isRecording ? 'bg-red-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    {isRecording ? <MicOff className="w-5 h-5 mr-2" /> : <Mic className="w-5 h-5 mr-2" />}
-                    {isRecording ? 'Stop Recording' : 'Record Answer'}
-                  </button>
-                  
+                <div className="flex justify-end">
                   <button
                     onClick={submitAnswer}
                     disabled={!userAnswer.trim() || showAnswer}
@@ -309,8 +404,57 @@ export default function MockInterviewPage() {
                   )}
                   
                   <div className="p-4 bg-emerald-green/10 border border-emerald-green/30 rounded-lg">
-                    <h4 className="font-semibold text-emerald-green mb-2">✓ Example Answer:</h4>
-                    <p className="text-sm text-gray-700 dark:text-gray-300">{exampleAnswer}</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-emerald-green">✓ Example Answer:</h4>
+                      <button
+                        onClick={() => toggleSpeak(exampleAnswer)}
+                        className="flex items-center px-3 py-1 rounded-lg transition-colors bg-emerald-green/20 hover:bg-emerald-green/30 text-emerald-green"
+                        title={isSpeaking ? "Stop reading" : "Read answer aloud"}
+                      >
+                        {isSpeaking ? (
+                          <>
+                            <VolumeX className="w-4 h-4 mr-1" />
+                            <span className="text-xs">Stop</span>
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="w-4 h-4 mr-1" />
+                            <span className="text-xs">Read Aloud</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                      {exampleAnswer.split('. ').map((sentence, index) => {
+                        // Format sentences into bullet points for better readability
+                        if (sentence.includes(':')) {
+                          const [title, ...content] = sentence.split(':');
+                          return (
+                            <div key={index} className="mb-2">
+                              <span className="font-semibold text-emerald-green">
+                                {title}:
+                              </span>
+                              <span className="ml-1">{content.join(':')}</span>
+                            </div>
+                          );
+                        } else if (sentence.trim()) {
+                          // Check for key technical terms to highlight
+                          const highlightedSentence = sentence
+                            .replace(/(\d+[-\d]*\s*(dBm|MHz|Mbps|Gbps|ms|GB|MB|KB))/g, '<span class="font-mono font-semibold text-sky-blue">$1</span>')
+                            .replace(/(ping|traceroute|ipconfig|nslookup|netstat|diskpart|chkdsk|sfc|dism|bcdedit|bootrec)/gi, '<code class="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs font-mono">$1</code>')
+                            .replace(/(Layer \d|Tier \d|Phase \d|Step \d)/g, '<span class="font-semibold text-dynamic-green">$1</span>')
+                            .replace(/(VLAN|DNS|DHCP|TCP|UDP|IP|OSI|QoS|VoIP|IPv4|IPv6|NAT|VPN|SNMP|SSH|RDP|SMB|HTTPS?|FTP|WPA2|WPA3|SSID|MAC|CPU|RAM|SSD|HDD|BIOS|UEFI|POST)/g, '<span class="font-mono text-xs bg-blue-100 dark:bg-blue-900/30 px-1 rounded">$1</span>');
+                          
+                          return (
+                            <div key={index} className="flex items-start">
+                              <span className="text-emerald-green mr-2 mt-1">•</span>
+                              <span dangerouslySetInnerHTML={{ __html: highlightedSentence + (sentence.endsWith('.') ? '' : '.') }} />
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
                   </div>
                   
                   <div className="flex justify-end">
@@ -337,22 +481,32 @@ export default function MockInterviewPage() {
           </motion.div>
         )}
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="mt-12 p-6 bg-dynamic-green/10 rounded-lg border border-dynamic-green/30"
-        >
-          <div className="flex items-start">
-            <AlertCircle className="w-5 h-5 text-dynamic-green mr-2 mt-0.5" />
-            <div>
-              <h4 className="font-semibold text-dynamic-green mb-1">Pro Tip</h4>
-              <p className="text-sm">
-                Practice multiple times to build confidence. After submitting your answer, you'll see an example of a strong response to help you understand what interviewers are looking for.
-              </p>
+        {showProTip && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-12 p-6 bg-dynamic-green/10 rounded-lg border border-dynamic-green/30 relative"
+          >
+            <button
+              onClick={() => setShowProTip(false)}
+              className="absolute top-4 right-4 text-dynamic-green hover:text-emerald-green transition-colors"
+              aria-label="Close pro tip"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex items-start pr-8">
+              <AlertCircle className="w-5 h-5 text-dynamic-green mr-2 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-semibold text-dynamic-green mb-1">Pro Tip</h4>
+                <p className="text-sm">
+                  Practice multiple times to build confidence. Questions are arranged in progressive difficulty—starting with easier ones to build your confidence, then gradually increasing in complexity. The final 2-3 questions are intentionally challenging to test if you're ready for Tier 2 growth. After submitting your answer, you'll see an example of a strong response to help you understand what interviewers are looking for. Remember: in technical interviews, there are no wrong answers—only opportunities to demonstrate stronger problem-solving approaches and deeper technical understanding.
+                </p>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
     </section>
   )

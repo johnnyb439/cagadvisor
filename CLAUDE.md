@@ -27,10 +27,16 @@ npm run dev
 - Live Site: https://caglive.vercel.app
 
 ## Key Features to Test
-- Mock Interview tool
+- Mock Interview tool (Helpdesk and ISP questions now available)
 - Job board functionality
 - Resource downloads
 - Responsive design
+
+## Adding New Interview Categories
+1. Add questions to `/app/mock-interview/interview-data.ts`
+2. Update `availableRoles` array in `/app/mock-interview/page.tsx`
+3. Update conditional logic for new role (search for 'helpdesk' references)
+4. See `INTERVIEW_CATEGORY_TEMPLATE.md` for detailed process
 
 ## Project Structure
 - `/app` - Next.js pages and routes
