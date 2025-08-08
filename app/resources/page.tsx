@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import BinaryBackground from '@/components/BinaryBackground'
+import ResourceCard from '@/components/ResourceCard'
 
 interface ResourceItem {
   id: string;
@@ -459,15 +460,15 @@ export default function ResourcesPage() {
     })
   }, [searchQuery, selectedCategory, selectedType])
 
-  const handleDownload = (path?: string) => {
-    if (path) {
-      const link = document.createElement('a')
-      link.href = path
-      link.download = path.split('/').pop() || 'download'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
+  const handleDownload = (resourceId: string, format: string) => {
+    // Use the new API endpoint for downloads
+    const downloadUrl = `/api/download?id=${resourceId}&format=${format}`
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = `${resourceId}.${format}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -569,86 +570,15 @@ export default function ResourcesPage() {
               className="mb-16"
             >
               <h2 className="text-2xl font-montserrat font-semibold mb-8">Featured Resources</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredResources.filter(r => r.featured).map((resource, index) => (
-                  <motion.div
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
+                {filteredResources.filter(r => r.featured).map((resource) => (
+                  <ResourceCard
                     key={resource.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                    viewport={{ once: true }}
-                    className="card group hover:shadow-xl transition-all duration-300 border-2 border-cyber-cyan relative overflow-hidden"
-                  >
-                    <div className="absolute -top-3 -right-3 bg-sky-blue text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      FEATURED
-                    </div>
-                    
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-lg font-montserrat font-semibold group-hover:text-dynamic-green transition-colors">
-                        {resource.title}
-                      </h3>
-                      {resource.rating && (
-                        <div className="flex items-center text-sm text-yellow-500">
-                          <Star className="w-4 h-4 fill-current" />
-                          <span className="ml-1">{resource.rating}</span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <p className="text-intel-gray mb-4">{resource.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full capitalize">
-                        {resource.type}
-                      </span>
-                      {resource.views && (
-                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                          <Eye className="w-4 h-4 mr-1" />
-                          {resource.views.toLocaleString()} views
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-center text-sm text-intel-gray mb-4">
-                      {resource.readTime && (
-                        <>
-                          <Clock className="w-4 h-4 mr-1" />
-                          {resource.readTime}
-                        </>
-                      )}
-                      {resource.downloadable && <Download className="w-4 h-4 ml-auto" />}
-                      {resource.type === 'video' && <PlayCircle className="w-4 h-4 ml-auto" />}
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      {resource.downloadable && resource.downloadPath ? (
-                        <button 
-                          onClick={() => handleDownload(resource.downloadPath)}
-                          className="flex-1 btn-secondary text-sm"
-                        >
-                          Download
-                        </button>
-                      ) : resource.interactive && resource.id === 'clearance-timeline' ? (
-                        <button 
-                          onClick={() => setShowCalculator(true)}
-                          className="flex-1 btn-secondary text-sm"
-                        >
-                          Open Calculator
-                        </button>
-                      ) : resource.type === 'video' ? (
-                        <button className="flex-1 btn-secondary text-sm">
-                          Watch Video
-                        </button>
-                      ) : (
-                        <button 
-                          onClick={() => setSelectedResource(resource)}
-                          className="flex-1 btn-secondary text-sm"
-                        >
-                          Read More
-                        </button>
-                      )}
-                    </div>
-                  </motion.div>
+                    resource={resource}
+                    onDownload={(_, format) => handleDownload(resource.id, format)}
+                    onOpenCalculator={() => setShowCalculator(true)}
+                    onReadMore={setSelectedResource}
+                  />
                 ))}
               </div>
             </motion.div>
@@ -677,82 +607,15 @@ export default function ResourcesPage() {
                   <h2 className="text-2xl font-montserrat font-semibold">{category}</h2>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categoryResources.map((resource, itemIndex) => (
-                    <motion.div
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
+                  {categoryResources.map((resource) => (
+                    <ResourceCard
                       key={resource.id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: itemIndex * 0.05 }}
-                      viewport={{ once: true }}
-                      className="card group hover:shadow-xl transition-all duration-300"
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-lg font-montserrat font-semibold group-hover:text-dynamic-green transition-colors">
-                          {resource.title}
-                        </h3>
-                        {resource.rating && (
-                          <div className="flex items-center text-sm text-yellow-500">
-                            <Star className="w-4 h-4 fill-current" />
-                            <span className="ml-1">{resource.rating}</span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <p className="text-intel-gray mb-4">{resource.description}</p>
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full capitalize">
-                          {resource.type}
-                        </span>
-                        {resource.views && (
-                          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                            <Eye className="w-4 h-4 mr-1" />
-                            {resource.views.toLocaleString()}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-center text-sm text-intel-gray mb-4">
-                        {resource.readTime && (
-                          <>
-                            <Clock className="w-4 h-4 mr-1" />
-                            {resource.readTime}
-                          </>
-                        )}
-                        {resource.downloadable && <Download className="w-4 h-4 ml-auto" />}
-                        {resource.type === 'video' && <PlayCircle className="w-4 h-4 ml-auto" />}
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        {resource.downloadable ? (
-                          <button 
-                            onClick={() => handleDownload(resource.downloadPath)}
-                            className="flex-1 btn-secondary text-sm"
-                          >
-                            Download
-                          </button>
-                        ) : resource.interactive ? (
-                          <button 
-                            onClick={() => setShowCalculator(true)}
-                            className="flex-1 btn-secondary text-sm"
-                          >
-                            Open Tool
-                          </button>
-                        ) : resource.type === 'video' ? (
-                          <button className="flex-1 btn-secondary text-sm">
-                            Watch Video
-                          </button>
-                        ) : (
-                          <button 
-                            onClick={() => setSelectedResource(resource)}
-                            className="flex-1 btn-secondary text-sm"
-                          >
-                            Read More
-                          </button>
-                        )}
-                      </div>
-                    </motion.div>
+                      resource={resource}
+                      onDownload={(_, format) => handleDownload(resource.id, format)}
+                      onOpenCalculator={() => setShowCalculator(true)}
+                      onReadMore={setSelectedResource}
+                    />
                   ))}
                 </div>
               </motion.div>
