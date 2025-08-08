@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Download, Clock, Eye, Star, FileText, 
   PlayCircle, ChevronDown, Check,
-  FileIcon, FileSpreadsheet, FilePdf
+  File, FileSpreadsheet, FileType
 } from 'lucide-react'
 
 interface ResourceCardProps {
@@ -31,10 +31,10 @@ interface ResourceCardProps {
 }
 
 const downloadFormats = [
-  { value: 'pdf', label: 'PDF', icon: FilePdf, description: 'Universal format, works everywhere' },
+  { value: 'pdf', label: 'PDF', icon: FileType, description: 'Universal format, works everywhere' },
   { value: 'docx', label: 'Word', icon: FileText, description: 'Microsoft Word document' },
   { value: 'rtf', label: 'RTF', icon: FileSpreadsheet, description: 'Rich Text Format (Mac compatible)' },
-  { value: 'txt', label: 'Text', icon: FileIcon, description: 'Plain text file' }
+  { value: 'txt', label: 'Text', icon: File, description: 'Plain text file' }
 ]
 
 export default function ResourceCard({ resource, onDownload, onOpenCalculator, onReadMore }: ResourceCardProps) {
