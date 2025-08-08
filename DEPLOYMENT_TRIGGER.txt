@@ -1,3 +1,0 @@
-Deployment Trigger: 2025-08-01 17:42:00
-This file triggers a new Vercel deployment.
-Auth is fixed and ready for production!

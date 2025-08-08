@@ -1,13 +1,20 @@
-# Cleared Advisory Group Website
+# CAG Advisory Platform
 
-A modern Next.js website for Cleared Advisory Group, helping cleared professionals transition to lucrative IT contracting careers.
+Professional career development platform specializing in IT certification preparation and placement services for cleared professionals.
 
-## Features
+## 🚀 Features
 
-- 🚀 Built with Next.js 15 and TypeScript
-- 🎨 Styled with Tailwind CSS using official CAG brand colors
-- 🤖 AI-powered Mock Interview Tool for IT positions
-- 📱 Fully responsive design
+### Mock Interview System
+- **270+ Technical Questions** across 6 specialized categories
+- **Progressive Difficulty** - Easy, Medium, and Hard levels
+- **Categories**: Helpdesk, ISP, OSP, Fiber Optics, Network, Systems
+- **Structured Answers** with industry best practices
+
+### Career Services
+- **Job Board** - Curated IT positions for cleared professionals
+- **Resume Builder** - ATS-optimized templates
+- **Resource Library** - Certification guides and templates
+- **User Dashboard** - Track applications and progress
 - ⚡ Fast performance with server-side rendering
 - 🔒 Security-focused for cleared professionals
 

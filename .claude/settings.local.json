@@ -51,7 +51,8 @@
       "Bash(grep:*)",
       "Bash(awk:*)",
       "Bash(pkill:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }
