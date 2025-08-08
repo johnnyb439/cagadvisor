@@ -4,6 +4,16 @@ All notable changes to the CAG Advisor project will be documented in this file.
 ## [Latest] - 2025-08-08
 
 ### Added
+#### Dual Account System
+- 🎯 Account type selection page (/register/select-type)
+- 🏢 Company registration flow with business-specific fields
+- 📊 Company dashboard with job management features
+- 🔀 Role-based navigation and automatic redirects
+- 📈 Company analytics (active jobs, applications, response rates)
+- 👥 Candidate pipeline view for companies
+- ✨ Visual distinction between account types (cyan vs green themes)
+
+### Added
 #### Resources Page Enhancements
 - ✨ Multi-format download support (PDF, DOCX, RTF, TXT)
 - 🎨 New ResourceCard component with format selection dropdown
