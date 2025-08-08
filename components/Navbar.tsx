@@ -25,7 +25,7 @@ export default function Navbar() {
     { href: '/jobs', label: 'Jobs' },
     { href: '/mock-interview', label: 'Mock Interview' },
     { href: '/resources', label: 'Resources' },
-    { href: '/register', label: 'Create Account' },
+    { href: '/register/select-type', label: 'Create Account' },
   ]
 
   return (
