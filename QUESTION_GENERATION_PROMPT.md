@@ -58,12 +58,20 @@ Focus on:
 - Mentoring programs
 
 ## Output Format
+**IMPORTANT**: Use this exact format WITHOUT quotes around property names:
 ```typescript
 {
   question: "Exact question text here",
   answer: "Comprehensive answer including: Initial assessment steps, specific actions to take, tools or commands to use, expected outcomes, follow-up procedures, and documentation requirements."
 },
 ```
+
+**CRITICAL FORMATTING RULES**:
+- DO NOT use quotes around `question` and `answer` property names
+- DO use quotes around the actual question and answer text
+- Include a comma after each closing brace except the last one
+- Correct: `question: "text here"`
+- Wrong: `"question": "text here"`
 
 ## Category-Specific Focus Areas
 
@@ -150,9 +158,30 @@ Focus on:
 
 1. Copy this entire prompt
 2. Replace [CATEGORY_NAME] with one of: Helpdesk, ISP, OSP, Network, Systems, or Fiber
-3. Paste into Gemini
-4. Ask Gemini to generate all 50 questions following this format
-5. Copy the output and paste into the interview-data.ts file
+3. Paste into Gemini with this exact request:
 
-## Sample Gemini Prompt:
-"Using the structure and requirements provided, generate 50 technical interview questions and answers for the Helpdesk role. Follow the exact format specified with Entry Level (1-15), Mid Level (16-30), Senior Level (31-40), and Expert Level (41-50) questions."
+## EXACT GEMINI PROMPT TO USE:
+```
+Generate exactly 50 technical interview questions and answers for the [CATEGORY_NAME] role following the structure below. 
+
+CRITICAL: 
+- Generate EXACTLY 50 questions (not 43 or any other number)
+- Use the TypeScript object format WITHOUT quotes around property names
+- Format: question: "text", answer: "text"
+- NOT: "question": "text", "answer": "text"
+
+Organize as:
+- Questions 1-15: Entry Level
+- Questions 16-30: Mid Level  
+- Questions 31-40: Senior Level
+- Questions 41-50: Expert Level
+
+Start generating now:
+```
+
+## After Generation:
+1. Count the questions to ensure there are exactly 50
+2. Check that property names (question, answer) have NO quotes
+3. Verify commas are present after each } except the last one
+4. Copy the entire output
+5. Paste into the interview-data.ts file in the appropriate category section
