@@ -3,7 +3,6 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import LiveChat from '@/components/LiveChat'
-import MobileBottomNav from '@/components/MobileBottomNav'
 // Removed AuthProvider import
 
 export const metadata: Metadata = {
@@ -21,12 +20,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-white dark:bg-command-black">
         <Navbar />
-        <main className="pt-20 pb-16 md:pb-0">
+        <main className="pt-20">
           {children}
         </main>
         <Footer />
         <LiveChat />
-        <MobileBottomNav />
       </body>
     </html>
   )

@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Search, MapPin, Shield, DollarSign, Filter, ChevronRight, Layers } from 'lucide-react'
+import { Search, MapPin, Shield, DollarSign, Filter, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import BinaryBackground from '@/components/BinaryBackground'
-import SwipeableJobCards from '@/components/SwipeableJobCards'
 
 // Sample job data - in production this would come from a database
 const sampleJobs = [
@@ -72,7 +71,6 @@ export default function JobsPage() {
   const [locationFilter, setLocationFilter] = useState('')
   const [clearanceFilter, setClearanceFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
-  const [viewMode, setViewMode] = useState<'list' | 'swipe'>('list')
 
   // Filter jobs based on search criteria
   const filteredJobs = jobs.filter(job => {
@@ -167,46 +165,15 @@ export default function JobsPage() {
           )}
         </motion.div>
 
-        {/* Results Count and View Toggle */}
-        <div className="mb-6 flex justify-between items-center">
+        {/* Results Count */}
+        <div className="mb-6">
           <p className="text-gray-600 dark:text-gray-400">
             Showing <span className="font-semibold">{filteredJobs.length}</span> cleared positions
           </p>
-          
-          {/* Mobile View Toggle */}
-          <div className="flex md:hidden bg-gray-200 dark:bg-gray-800 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-md transition-all min-w-[80px] ${
-                viewMode === 'list' 
-                  ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md' 
-                  : 'text-gray-600 dark:text-gray-400'
-              }`}
-            >
-              List
-            </button>
-            <button
-              onClick={() => setViewMode('swipe')}
-              className={`px-4 py-2 rounded-md transition-all min-w-[80px] ${
-                viewMode === 'swipe' 
-                  ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-md' 
-                  : 'text-gray-600 dark:text-gray-400'
-              }`}
-            >
-              Swipe
-            </button>
-          </div>
         </div>
 
-        {/* Conditional Rendering based on View Mode */}
-        {viewMode === 'swipe' && (
-          <div className="block md:hidden">
-            <SwipeableJobCards />
-          </div>
-        )}
-        
-        {/* Job Listings - Show on desktop always, on mobile only in list mode */}
-        <div className={`space-y-4 ${viewMode === 'swipe' ? 'hidden md:block' : 'block'}`}>
+        {/* Job Listings */}
+        <div className="space-y-4">
           {filteredJobs.map((job, index) => (
             <motion.div
               key={job.id}

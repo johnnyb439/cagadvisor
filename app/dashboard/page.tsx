@@ -34,16 +34,14 @@ export default function DashboardPage() {
   useEffect(() => {
     // Check if user is logged in (from localStorage)
     const currentUser = localStorage.getItem('currentUser')
-    const companyUser = localStorage.getItem('company')
-    
-    // If it's a company account, redirect to company dashboard
-    if (companyUser) {
-      router.push('/dashboard/company')
-      return
-    }
-    
     if (currentUser) {
-      setUser(JSON.parse(currentUser))
+      const userData = JSON.parse(currentUser)
+      // Redirect company users to company dashboard
+      if (userData.isCompany) {
+        router.push('/dashboard/company')
+        return
+      }
+      setUser(userData)
     } else {
       router.push('/login')
     }

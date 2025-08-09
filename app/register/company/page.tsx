@@ -52,7 +52,14 @@ export default function CompanyRegisterPage() {
         contactName: formData.contactName,
         isCompany: true
       }))
-      router.push('/dashboard')
+      // Also set as currentUser for auth checks
+      localStorage.setItem('currentUser', JSON.stringify({
+        email: formData.email,
+        name: formData.contactName,
+        companyName: formData.companyName,
+        isCompany: true
+      }))
+      router.push('/dashboard/company')
     }, 1000)
   }
 

@@ -1,20 +1,11 @@
 [
   {
-    "id": "user_1754584379301_fpyg402yl",
+    "id": "user_1754728956384_a5xr9337c",
     "email": "test@test.com",
     "username": "test",
     "password": "testtest",
     "name": "test",
-    "clearanceLevel": "Secret",
-    "createdAt": "2025-08-07T16:32:59.301Z"
-  },
-  {
-    "id": "user_1754584770197_jkex9vm12",
-    "email": "permissions@test.com",
-    "username": "permissions",
-    "password": "testtest",
-    "name": "Permissions ",
-    "clearanceLevel": "Public Trust",
-    "createdAt": "2025-08-07T16:39:30.197Z"
+    "clearanceLevel": "None",
+    "createdAt": "2025-08-09T08:42:36.384Z"
   }
 ]
