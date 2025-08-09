@@ -1,6 +1,8 @@
 export interface InterviewQuestion {
   question: string;
   answer: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  category?: string;
 }
 
 export const interviewQuestions: Record<string, InterviewQuestion[]> = {
