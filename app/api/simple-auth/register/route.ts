@@ -20,12 +20,20 @@ function saveUsers(users: any[]) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, username, password, name, clearanceLevel } = body
+    const { email, username, password, name, clearanceLevel, disclaimerAgreed } = body
 
     // Validate required fields
     if (!email || !username || !password || !name) {
       return NextResponse.json(
         { success: false, error: 'All fields are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate disclaimer agreement
+    if (!disclaimerAgreed) {
+      return NextResponse.json(
+        { success: false, error: 'You must agree to the self-report disclaimer to create an account' },
         { status: 400 }
       )
     }
@@ -73,6 +81,8 @@ export async function POST(request: NextRequest) {
       password: password, // Plain text for testing
       name: name,
       clearanceLevel: clearanceLevel || 'None',
+      disclaimerAgreed: disclaimerAgreed,
+      disclaimerAgreedAt: new Date().toISOString(),
       createdAt: new Date().toISOString()
     }
 

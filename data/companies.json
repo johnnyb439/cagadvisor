@@ -1,0 +1,16 @@
+[
+  {
+    "id": "company_1754933486950_kf9pmx5ep",
+    "companyName": "Test Company",
+    "contactName": "John Doe",
+    "email": "test@company.com",
+    "phone": "555-123-4567",
+    "password": "password123",
+    "companySize": "11-50",
+    "hiringNeeds": "Looking for cleared developers",
+    "disclaimerAgreed": true,
+    "disclaimerAgreedAt": "2025-08-11T17:31:26.950Z",
+    "createdAt": "2025-08-11T17:31:26.950Z",
+    "isCompany": true
+  }
+]

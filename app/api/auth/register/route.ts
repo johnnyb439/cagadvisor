@@ -4,12 +4,20 @@ import { createUser } from '@/auth.config'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, username, password, name, clearanceLevel } = body
+    const { email, username, password, name, clearanceLevel, disclaimerAgreed } = body
 
     // Validate required fields
     if (!email || !username || !password || !name) {
       return NextResponse.json(
         { error: 'All fields are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate disclaimer agreement
+    if (!disclaimerAgreed) {
+      return NextResponse.json(
+        { error: 'You must agree to the self-report disclaimer to create an account' },
         { status: 400 }
       )
     }

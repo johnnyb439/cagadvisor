@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { User, Mail, Lock, Shield, AlertCircle, Check } from 'lucide-react'
+import { User, Mail, Lock, Shield, AlertCircle, Check, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { selfReportDisclaimer } from '@/lib/disclaimer'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -15,11 +16,13 @@ export default function RegisterPage() {
     password: '',
     confirmPassword: '',
     clearanceLevel: '',
-    agreeToTerms: false
+    agreeToTerms: false,
+    agreeToDisclaimer: false
   })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,6 +46,11 @@ export default function RegisterPage() {
       return
     }
 
+    if (!formData.agreeToDisclaimer) {
+      setError('Please agree to the self-report disclaimer')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -55,7 +63,8 @@ export default function RegisterPage() {
           username: formData.username,
           password: formData.password,
           name: formData.name,
-          clearanceLevel: formData.clearanceLevel
+          clearanceLevel: formData.clearanceLevel,
+          disclaimerAgreed: formData.agreeToDisclaimer
         })
       })
 
@@ -268,9 +277,34 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="agreeToDisclaimer"
+                  type="checkbox"
+                  checked={formData.agreeToDisclaimer}
+                  onChange={(e) => setFormData({ ...formData, agreeToDisclaimer: e.target.checked })}
+                  className="w-4 h-4 text-dynamic-green border-gray-300 rounded focus:ring-dynamic-green"
+                  required
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="agreeToDisclaimer" className="text-gray-600 dark:text-gray-400">
+                  I acknowledge and agree to the{' '}
+                  <button
+                    type="button"
+                    onClick={() => setShowDisclaimerModal(true)}
+                    className="text-dynamic-green hover:text-emerald-green underline"
+                  >
+                    Self-Report Disclaimer
+                  </button>
+                </label>
+              </div>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !formData.agreeToTerms || !formData.agreeToDisclaimer}
               className="w-full bg-dynamic-green hover:bg-emerald-green text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
@@ -287,6 +321,52 @@ export default function RegisterPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Disclaimer Modal */}
+      {showDisclaimerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+          >
+            <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex justify-between items-start">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {selfReportDisclaimer.title}
+                </h2>
+                <button
+                  onClick={() => setShowDisclaimerModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6">
+              <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+                  {selfReportDisclaimer.short}
+                </p>
+              </div>
+              
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {selfReportDisclaimer.long}
+              </p>
+              
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowDisclaimerModal(false)}
+                  className="px-6 py-2 bg-dynamic-green hover:bg-emerald-green text-white font-semibold rounded-lg transition-colors"
+                >
+                  I Understand
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   )
 }

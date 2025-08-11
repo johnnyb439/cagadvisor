@@ -1,0 +1,92 @@
+Cleared Advisory Pilot Plan — Self-Reported Clearance Model
+
+🚀 Key Change
+We do not validate, confirm, or maintain clearance records. All clearance details are self-reported by candidates at registration, with a disclaimer making it clear that:
+- Candidates are responsible for providing accurate, current information.
+- Employers/recruiters must independently verify all clearance claims before hiring.
+
+TL;DR — Top 7 Priorities
+1. Liability protection (non-negotiable): Privacy policy, Terms of Service, data handling rules, and a self-report disclaimer stating we do not validate clearance levels.
+2. Demand before supply: Lock 3–5 anchor employers (LOIs or emails confirming participation) with 20–50 active reqs.
+3. Supply seed: Recruit 75–150 cleared professionals who self-report clearance type and dates.
+4. Concierge matching ops: Manual matching workflow using candidate profiles + job requirements; recruiters verify details on their end.
+5. Clear success metrics: Time-to-first-match (<48h), interview rate (≥25%), employer satisfaction (NPS ≥40).
+6. Pricing experiment: Test free-to-paid transition and see which model sticks after pilot.
+7. Instrumentation: Simple tracking sheet + weekly reporting for matches, interviews, and offers.
+
+4-Week Pilot Timeline
+
+Week 0: Prep & Guardrails
+  - Draft Privacy, ToS, Data Policy, and Self-Reported Clearance Disclaimer.
+  - Create employer LOI + 1-pager.
+  - Build candidate & employer intake forms (with "Select Your Clearance" dropdown).
+  - Set up tracking board + messaging templates.
+
+Week 1: Secure Participants & Start Matching
+  - Close 3–5 employer LOIs.
+  - Onboard 50+ candidates.
+  - Send first curated matches within 48 hours of employer intake.
+
+Week 2: Scale Volume
+  - Reach 100+ candidates and 20+ live roles.
+  - Book 10+ interviews.
+  - Collect first round of employer and candidate feedback.
+
+Week 3: Conversion Push
+  - Aim for 3+ offers or written intent to hire.
+  - Identify which pricing arm converts best.
+
+Week 4: Wrap-Up & Next Steps
+  - Final KPI check.
+  - Close pilot contracts.
+  - Prep for full rollout.
+
+Workstreams & Milestones
+
+Compliance & Risk
+  - Draft ToS, Privacy, and Self-Reported Clearance Disclaimer.
+  - Remove all backend clearance verification logic.
+  - Milestone: All compliance docs approved by Aug 15.
+
+Employer Acquisition
+  - Target small/mid defense contractors, cleared staffing firms, program managers.
+  - Milestones: 3 LOIs by Aug 19, 5 LOIs by Aug 22.
+
+Candidate Acquisition
+  - Channels: referrals, veteran communities, LinkedIn groups.
+  - Milestones: 50 candidates by Aug 21, 100 by Aug 28.
+
+Matching Operations
+  - Intake → Self-report clearance → Match to roles → Send to employer.
+  - Recruiters responsible for verifying all clearance claims.
+  - Milestone: SLA for first match ≤48 hours.
+
+Pricing & Revenue
+  - Test free-to-paid model during pilot.
+  - Milestone: Choose final pricing model by Sep 10.
+
+Marketing & Comms
+  - Create employer and candidate one-pagers.
+  - Add disclaimer clearly to all public-facing materials.
+  - Milestone: All assets ready by Aug 16.
+
+Pilot KPIs
+- Time-to-first-match: <48 hours
+- Interview rate: ≥25%
+- Offer rate: ≥15%
+- Employer NPS: ≥40
+- Candidate NPS: ≥40
+
+Risks & "Don't Skip" Items
+- Self-reported clearance accuracy: mitigate by strong disclaimers and employer verification responsibility.
+- Two-sided imbalance: adjust targeting quickly if supply/demand skew.
+- Employer feedback lag: set response SLAs in LOIs.
+- Scope creep: stick to 2–3 role families for pilot.
+
+Next 48 Hours — Action Checklist
+☐ Approve Privacy/ToS + Self-Report Disclaimer
+☐ Finalize employer LOI & price test
+☐ Build intake forms (self-report clearance dropdown)
+☐ Stand up tracking board + weekly reporting
+☐ Outreach to 10 employers (close 3 LOIs)
+☐ Recruit first 30 candidates

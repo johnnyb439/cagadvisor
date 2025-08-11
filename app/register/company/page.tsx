@@ -17,14 +17,17 @@ export default function CompanyRegisterPage() {
     confirmPassword: '',
     companySize: '',
     hiringNeeds: '',
-    agreeToTerms: false
+    agreeToTerms: false,
+    agreeToDisclaimer: false
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
@@ -42,25 +45,63 @@ export default function CompanyRegisterPage() {
       return
     }
 
+    if (!formData.agreeToDisclaimer) {
+      setError('Please acknowledge the self-report disclaimer')
+      return
+    }
+
     setLoading(true)
 
-    // Simulate registration
-    setTimeout(() => {
-      localStorage.setItem('company', JSON.stringify({
-        email: formData.email,
-        companyName: formData.companyName,
-        contactName: formData.contactName,
-        isCompany: true
-      }))
-      // Also set as currentUser for auth checks
-      localStorage.setItem('currentUser', JSON.stringify({
-        email: formData.email,
-        name: formData.contactName,
-        companyName: formData.companyName,
-        isCompany: true
-      }))
-      router.push('/dashboard/company')
-    }, 1000)
+    try {
+      // Call the real API endpoint
+      const response = await fetch('/api/auth/register/company', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyName: formData.companyName,
+          contactName: formData.contactName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          companySize: formData.companySize,
+          hiringNeeds: formData.hiringNeeds,
+          disclaimerAgreed: formData.agreeToDisclaimer
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Registration failed. Please try again.')
+        setLoading(false)
+        return
+      }
+
+      // Registration successful
+      setSuccess('🎉 Company account created successfully!')
+      
+      // Store company data and redirect
+      if (data.company) {
+        localStorage.setItem('company', JSON.stringify(data.company))
+        localStorage.setItem('currentUser', JSON.stringify({
+          ...data.company,
+          name: data.company.contactName,
+          isCompany: true
+        }))
+      }
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        router.push('/dashboard/company')
+      }, 1500)
+
+    } catch (err) {
+      console.error('Registration error:', err)
+      setError('An error occurred during registration. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -97,6 +138,18 @@ export default function CompanyRegisterPage() {
               </button>
             </div>
           </div>
+
+          {/* Success Message */}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex items-center"
+            >
+              <Check size={20} className="text-green-500 mr-2" />
+              <span className="text-green-700 dark:text-green-400 text-sm">{success}</span>
+            </motion.div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -279,9 +332,22 @@ export default function CompanyRegisterPage() {
               </label>
             </div>
 
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="disclaimer"
+                checked={formData.agreeToDisclaimer}
+                onChange={(e) => setFormData({ ...formData, agreeToDisclaimer: e.target.checked })}
+                className="mt-1 mr-2"
+              />
+              <label htmlFor="disclaimer" className="text-sm text-gray-600 dark:text-gray-400">
+                I acknowledge that candidate information is self-reported and our company is responsible for verification
+              </label>
+            </div>
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !formData.agreeToTerms || !formData.agreeToDisclaimer}
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating Company Account...' : 'Create Company Account'}
