@@ -1,0 +1,50 @@
+{
+  "candidateTests": [
+    {
+      "testName": "Candidate Registration without Disclaimer",
+      "expectedStatus": 400,
+      "actualStatus": 400,
+      "expectedError": "self-report disclaimer",
+      "actualError": "You must agree to the self-report disclaimer to create an account",
+      "passed": true
+    },
+    {
+      "testName": "Candidate Registration with Disclaimer",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "userId": "user_1754988228817_0yt3m75vv",
+      "passed": true
+    },
+    {
+      "testName": "Candidate Audit Trail Verification",
+      "userFound": true,
+      "disclaimerAgreed": true,
+      "disclaimerAgreedAt": "2025-08-12T08:43:48.817Z",
+      "passed": true
+    }
+  ],
+  "companyTests": [
+    {
+      "testName": "Company Registration without Disclaimer",
+      "expectedStatus": 400,
+      "actualStatus": 400,
+      "expectedError": "disclaimer",
+      "actualError": "You must acknowledge the self-report disclaimer to create a company account",
+      "passed": true
+    },
+    {
+      "testName": "Company Registration with Disclaimer",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "companyId": "company_1754988228983_vrx4p1jh6",
+      "passed": true
+    },
+    {
+      "testName": "Company Audit Trail Verification",
+      "companyFound": true,
+      "disclaimerAgreed": true,
+      "disclaimerAgreedAt": "2025-08-12T08:43:48.983Z",
+      "passed": true
+    }
+  ]
+}

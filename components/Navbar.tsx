@@ -9,6 +9,7 @@ import ThemeToggle from './ThemeToggle'
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [isMobileNavEnabled] = useState(true) // Feature flag for new mobile nav
 
   useEffect(() => {
     // Check if user is logged in

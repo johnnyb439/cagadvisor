@@ -12,5 +12,19 @@
     "disclaimerAgreedAt": "2025-08-11T17:31:26.950Z",
     "createdAt": "2025-08-11T17:31:26.950Z",
     "isCompany": true
+  },
+  {
+    "id": "company_1754988228983_vrx4p1jh6",
+    "companyName": "Test Company With Disclaimer 1754988224584",
+    "contactName": "Jane Doe",
+    "email": "company_disclaim_1754988224584@test.com",
+    "phone": "555-987-6543",
+    "password": "CompanyPass123!",
+    "companySize": "51-200",
+    "hiringNeeds": "Seeking TS/SCI cleared engineers",
+    "disclaimerAgreed": true,
+    "disclaimerAgreedAt": "2025-08-12T08:43:48.983Z",
+    "createdAt": "2025-08-12T08:43:48.983Z",
+    "isCompany": true
   }
 ]

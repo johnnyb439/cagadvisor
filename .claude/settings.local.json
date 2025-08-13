@@ -52,7 +52,9 @@
       "Bash(awk:*)",
       "Bash(pkill:*)",
       "Bash(true)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(chmod:*)",
+      "Bash(./check-onedrive-sync.sh:*)"
     ],
     "deny": []
   }

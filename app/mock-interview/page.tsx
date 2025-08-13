@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Bot, Send, RefreshCw, CheckCircle, AlertCircle, Volume2, VolumeX, X, Clock, Trophy, Target, Timer, Pause, Play } from 'lucide-react'
 import BinaryBackground from '@/components/BinaryBackground'
 import { interviewQuestions, InterviewQuestion } from './interview-data'
+import { ComponentErrorBoundary } from '@/components/ErrorBoundary'
 
 
 type InterviewTier = 'tier1' | 'tier2'
@@ -300,8 +301,9 @@ export default function MockInterviewPage() {
   })
   const [showSummary, setShowSummary] = useState(false)
 
-  const startInterview = () => {
-    if (selectedRole) {
+  const startInterview = (roleToStart?: string) => {
+    const role = roleToStart || selectedRole;
+    if (role) {
       setIsInterviewing(true)
       setShowSummary(false)
       setInterviewStats({
@@ -312,8 +314,8 @@ export default function MockInterviewPage() {
       })
       
       // Order questions by progressive difficulty
-      if (availableRoles.includes(selectedRole)) {
-        const questions = interviewQuestions[selectedRole] || [];
+      if (availableRoles.includes(role)) {
+        const questions = interviewQuestions[role] || [];
         const ordered = orderByDifficulty(questions);
         setShuffledQuestions(ordered);
         setQuestionIndex(0);
@@ -333,14 +335,7 @@ export default function MockInterviewPage() {
   useEffect(() => {
     if (isInterviewing && useTimer && !isTimerPaused && timeRemaining > 0 && !showAnswer) {
       timerRef.current = setTimeout(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            // Auto-submit when time runs out
-            submitAnswer();
-            return 0;
-          }
-          return prev - 1;
-        });
+        setTimeRemaining(prev => prev - 1);
       }, 1000);
       
       return () => {
@@ -350,6 +345,13 @@ export default function MockInterviewPage() {
       };
     }
   }, [isInterviewing, useTimer, isTimerPaused, timeRemaining, showAnswer]);
+  
+  // Auto-submit when timer reaches 0
+  useEffect(() => {
+    if (isInterviewing && useTimer && timeRemaining === 0 && !showAnswer) {
+      submitAnswer();
+    }
+  }, [timeRemaining, isInterviewing, useTimer, showAnswer]);
 
   const generateQuestion = () => {
     if (availableRoles.includes(selectedRole!) && shuffledQuestions.length > 0) {
@@ -643,7 +645,7 @@ export default function MockInterviewPage() {
                         setSelectedRole(role.id);
                         // Automatically start interview after role selection
                         setTimeout(() => {
-                          startInterview();
+                          startInterview(role.id);
                         }, 500);
                       }
                     }}
@@ -775,36 +777,64 @@ export default function MockInterviewPage() {
                           )}
                         </button>
                       </div>
-                      <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2 max-h-64 overflow-y-auto">
-                        {exampleAnswer.split('. ').map((sentence, index) => {
-                          // Format sentences into bullet points for better readability
-                          if (sentence.includes(':')) {
-                            const [title, ...content] = sentence.split(':');
-                            return (
-                              <div key={index} className="mb-2">
-                                <span className="font-semibold text-emerald-green">
-                                  {title}:
-                                </span>
-                                <span className="ml-1">{content.join(':')}</span>
-                              </div>
-                            );
-                          } else if (sentence.trim()) {
-                            // Check for key technical terms to highlight
-                            const highlightedSentence = sentence
-                              .replace(/(\d+[-\d]*\s*(dBm|MHz|Mbps|Gbps|ms|GB|MB|KB))/g, '<span class="font-mono font-semibold text-sky-blue">$1</span>')
-                              .replace(/(ping|traceroute|ipconfig|nslookup|netstat|diskpart|chkdsk|sfc|dism|bcdedit|bootrec)/gi, '<code class="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-xs font-mono">$1</code>')
-                              .replace(/(Layer \d|Tier \d|Phase \d|Step \d)/g, '<span class="font-semibold text-dynamic-green">$1</span>')
-                              .replace(/(VLAN|DNS|DHCP|TCP|UDP|IP|OSI|QoS|VoIP|IPv4|IPv6|NAT|VPN|SNMP|SSH|RDP|SMB|HTTPS?|FTP|WPA2|WPA3|SSID|MAC|CPU|RAM|SSD|HDD|BIOS|UEFI|POST)/g, '<span class="font-mono text-xs bg-blue-100 dark:bg-blue-900/30 px-1 rounded">$1</span>');
+                      <div className="text-sm text-gray-700 dark:text-gray-300 space-y-3 max-h-64 overflow-y-auto">
+                        {(() => {
+                          // Clean and format the answer text
+                          const cleanAnswer = exampleAnswer
+                            .replace(/\*\*/g, '') // Remove bold markdown
+                            .replace(/\n•/g, '\n') // Remove bullet markdown
+                            .replace(/^\*\s/gm, '') // Remove asterisk bullets
                             
-                            return (
-                              <div key={index} className="flex items-start">
-                                <span className="text-emerald-green mr-2 mt-1">•</span>
-                                <span dangerouslySetInnerHTML={{ __html: highlightedSentence + (sentence.endsWith('.') ? '' : '.') }} />
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
+                          // Split by main sections (usually separated by double newlines)
+                          const sections = cleanAnswer.split(/\n\n+/);
+                          
+                          return sections.map((section, sectionIndex) => {
+                            // Check if this is a header section (ends with colon or contains Step/Phase)
+                            const lines = section.split('\n').filter(line => line.trim());
+                            
+                            if (lines.length === 0) return null;
+                            
+                            // Check if first line is a header
+                            const firstLine = lines[0];
+                            const isHeader = firstLine.includes(':') && !firstLine.includes('•');
+                            
+                            if (isHeader) {
+                              const [header, ...content] = section.split(':');
+                              return (
+                                <div key={sectionIndex} className="mb-3">
+                                  <h4 className="font-semibold text-emerald-green mb-2">
+                                    {header.trim()}
+                                  </h4>
+                                  <div className="ml-4 space-y-1">
+                                    {content.join(':').split('\n').filter(line => line.trim()).map((line, lineIndex) => (
+                                      <div key={lineIndex} className="flex items-start">
+                                        <span className="text-emerald-green mr-2">•</span>
+                                        <span>{line.trim().replace(/^[•\-*]\s*/, '')}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              );
+                            } else {
+                              // Regular paragraph or bullet points
+                              return (
+                                <div key={sectionIndex} className="space-y-1">
+                                  {lines.map((line, lineIndex) => {
+                                    const cleanLine = line.trim().replace(/^[•\-*]\s*/, '');
+                                    if (!cleanLine) return null;
+                                    
+                                    return (
+                                      <div key={lineIndex} className="flex items-start">
+                                        <span className="text-emerald-green mr-2">•</span>
+                                        <span>{cleanLine}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            }
+                          });
+                        })()}
                       </div>
                     </div>
                   </div>

@@ -7,5 +7,16 @@
     "name": "test",
     "clearanceLevel": "None",
     "createdAt": "2025-08-09T08:42:36.384Z"
+  },
+  {
+    "id": "user_1754988228817_0yt3m75vv",
+    "email": "test_disclaim_1754988224584@test.com",
+    "username": "testuser_disclaim_1754988224584",
+    "password": "TestPass123!",
+    "name": "Test User With Disclaimer 1754988224584",
+    "clearanceLevel": "Top Secret",
+    "disclaimerAgreed": true,
+    "disclaimerAgreedAt": "2025-08-12T08:43:48.817Z",
+    "createdAt": "2025-08-12T08:43:48.817Z"
   }
 ]
