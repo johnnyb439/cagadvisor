@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createUser } from '@/auth.config'
 
 export async function POST(request: NextRequest) {
+  console.log('REGISTER ENDPOINT HIT');
   try {
     const body = await request.json()
     const { email, username, password, name, clearanceLevel, disclaimerAgreed } = body
