@@ -108,19 +108,63 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
           >
             <Link href="/register" className="group">
               <button className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center justify-center">
-                Start Your Journey
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Create Account
               </button>
             </Link>
-            <Link href="/mock-interview">
-              <button className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-200">
-                Try Mock Interview
+            <Link href="/login">
+              <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white hover:bg-white hover:text-black transition-all duration-200">
+                Log In
               </button>
             </Link>
+          </motion.div>
+
+          {/* QR Code Section */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mb-12 flex justify-center"
+          >
+            <div className="bg-white p-4 rounded-lg shadow-lg">
+              <div className="w-48 h-48 bg-white flex items-center justify-center">
+                {/* QR Code Pattern */}
+                <svg width="180" height="180" viewBox="0 0 180 180" className="text-black">
+                  {/* Simplified QR Code pattern */}
+                  <rect width="180" height="180" fill="white"/>
+                  <rect x="0" y="0" width="60" height="60" fill="black"/>
+                  <rect x="120" y="0" width="60" height="60" fill="black"/>
+                  <rect x="0" y="120" width="60" height="60" fill="black"/>
+                  <rect x="20" y="20" width="20" height="20" fill="white"/>
+                  <rect x="140" y="20" width="20" height="20" fill="white"/>
+                  <rect x="20" y="140" width="20" height="20" fill="white"/>
+                  {/* Add some data pattern */}
+                  <rect x="80" y="20" width="10" height="10" fill="black"/>
+                  <rect x="100" y="20" width="10" height="10" fill="black"/>
+                  <rect x="80" y="40" width="10" height="10" fill="black"/>
+                  <rect x="100" y="50" width="10" height="10" fill="black"/>
+                  <rect x="70" y="80" width="10" height="10" fill="black"/>
+                  <rect x="90" y="80" width="10" height="10" fill="black"/>
+                  <rect x="110" y="80" width="10" height="10" fill="black"/>
+                  <rect x="80" y="100" width="10" height="10" fill="black"/>
+                  <rect x="100" y="100" width="10" height="10" fill="black"/>
+                  <rect x="70" y="120" width="10" height="10" fill="black"/>
+                  <rect x="90" y="120" width="10" height="10" fill="black"/>
+                  <rect x="110" y="120" width="10" height="10" fill="black"/>
+                  <rect x="130" y="120" width="10" height="10" fill="black"/>
+                  <rect x="150" y="120" width="10" height="10" fill="black"/>
+                  <rect x="80" y="140" width="10" height="10" fill="black"/>
+                  <rect x="100" y="140" width="10" height="10" fill="black"/>
+                  <rect x="120" y="140" width="10" height="10" fill="black"/>
+                  <rect x="80" y="160" width="10" height="10" fill="black"/>
+                  <rect x="110" y="160" width="10" height="10" fill="black"/>
+                  <rect x="130" y="160" width="10" height="10" fill="black"/>
+                </svg>
+              </div>
+            </div>
           </motion.div>
 
           {/* Stats Section */}
