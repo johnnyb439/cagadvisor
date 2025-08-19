@@ -11,6 +11,7 @@ import Toast from '@/components/ui/Toast'
 interface Resume {
   id: string
   name: string
+  filename: string
   size: string
   uploadDate: string
   isDefault: boolean
@@ -75,6 +76,7 @@ export default function UpdateResumePage() {
     const newResume: Resume = {
       id: Date.now().toString(),
       name: file.name,
+      filename: file.name,
       size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
       uploadDate: new Date().toISOString(),
       isDefault: false,

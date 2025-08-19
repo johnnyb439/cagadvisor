@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, Clock, RotateCcw, Eye, Edit3 } from 'lucide-react'
+import { FileText, Clock, RotateCcw, Eye, Edit3, X } from 'lucide-react'
 
 interface ResumeVersion {
   id: string
