@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Leaflet Map Styles */
+@import 'leaflet/dist/leaflet.css';
+
+/* Custom Font for Signature */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+@layer base {
+  body {
+    @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Gradient background utility */
+  .gradient-bg {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700;
+  }
+  
+  /* Clearance badge styles */
+  .clearance-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .clearance-badge.public {
+    @apply bg-clearance-public/10 text-clearance-public;
+  }
+  
+  .clearance-badge.secret {
+    @apply bg-clearance-secret/10 text-clearance-secret;
+  }
+  
+  .clearance-badge.topsecret {
+    @apply bg-clearance-topsecret/10 text-clearance-topsecret;
+  }
+  
+  .clearance-badge.sci {
+    @apply bg-clearance-sci/10 text-clearance-sci;
+  }
+}
+
+/* Animation Utilities */
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+  animation-fill-mode: both;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+  animation-fill-mode: both;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+  animation-fill-mode: both;
+}
+
+.animation-delay-800 {
+  animation-delay: 0.8s;
+  animation-fill-mode: both;
+}
+
+.delay-1000 {
+  animation-delay: 1s;
+}
+
+/* Grid background pattern */
+.bg-grid-white\/\[0\.05\] {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
